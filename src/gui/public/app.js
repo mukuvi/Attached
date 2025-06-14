@@ -1,0 +1,364 @@
+class MukuviGUI {
+    constructor() {
+        this.socket = null;
+        this.sessionId = null;
+        this.currentUser = null;
+        this.currentDirectory = '/';
+        this.commandHistory = [];
+        this.historyIndex = -1;
+        
+        this.init();
+    }
+
+    async init() {
+        // Show boot screen
+        await this.showBootSequence();
+        
+        // Initialize socket connection
+        this.socket = io();
+        this.setupSocketListeners();
+        
+        // Show login screen
+        this.showLoginScreen();
+        
+        // Setup event listeners
+        this.setupEventListeners();
+        
+        // Start clock
+        this.startClock();
+    }
+
+    async showBootSequence() {
+        const bootScreen = document.getElementById('boot-screen');
+        const loadingText = document.querySelector('.loading-text');
+        
+        const bootMessages = [
+            'Initializing kernel...',
+            'Loading system services...',
+            'Starting file system...',
+            'Initializing user manager...',
+            'Loading GUI components...',
+            'System ready!'
+        ];
+
+        for (let i = 0; i < bootMessages.length; i++) {
+            loadingText.textContent = bootMessages[i];
+            await this.sleep(500);
+        }
+
+        await this.sleep(1000);
+        bootScreen.classList.add('hidden');
+    }
+
+    showLoginScreen() {
+        document.getElementById('login-screen').classList.remove('hidden');
+    }
+
+    showDesktop() {
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('desktop').classList.remove('hidden');
+        
+        // Initialize desktop components
+        this.updatePrompt();
+        this.loadSystemInfo();
+        this.loadDirectoryListing();
+        this.loadProcessList();
+        
+        // Focus terminal input
+        document.getElementById('terminal-input').focus();
+    }
+
+    setupSocketListeners() {
+        this.socket.on('command-result', (result) => {
+            this.handleCommandResult(result);
+        });
+
+        this.socket.on('directory-listing', (data) => {
+            this.updateFileManager(data);
+        });
+    }
+
+    setupEventListeners() {
+        // Login form
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.handleLogin();
+        });
+
+        // Terminal input
+        const terminalInput = document.getElementById('terminal-input');
+        terminalInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                this.executeCommand();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                this.navigateHistory(-1);
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                this.navigateHistory(1);
+            }
+        });
+
+        // File manager buttons
+        document.getElementById('refresh-btn').addEventListener('click', () => {
+            this.loadDirectoryListing();
+        });
+
+        document.getElementById('new-folder-btn').addEventListener('click', () => {
+            this.createNewFolder();
+        });
+
+        document.getElementById('new-file-btn').addEventListener('click', () => {
+            this.createNewFile();
+        });
+
+        // Window controls
+        document.querySelectorAll('.control.close').forEach(control => {
+            control.addEventListener('click', (e) => {
+                e.target.closest('.window').style.display = 'none';
+            });
+        });
+
+        document.querySelectorAll('.control.minimize').forEach(control => {
+            control.addEventListener('click', (e) => {
+                const window = e.target.closest('.window');
+                window.style.transform = window.style.transform === 'scale(0.1)' ? 'scale(1)' : 'scale(0.1)';
+            });
+        });
+    }
+
+    async handleLogin() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const errorDiv = document.getElementById('login-error');
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                this.sessionId = result.sessionId;
+                this.currentUser = result.user;
+                this.currentDirectory = `/home/${result.user.username}`;
+                this.showDesktop();
+            } else {
+                errorDiv.textContent = result.error;
+                errorDiv.classList.remove('hidden');
+            }
+        } catch (error) {
+            errorDiv.textContent = 'Connection error';
+            errorDiv.classList.remove('hidden');
+        }
+    }
+
+    executeCommand() {
+        const input = document.getElementById('terminal-input');
+        const command = input.value.trim();
+        
+        if (!command) return;
+
+        // Add to history
+        this.commandHistory.push(command);
+        this.historyIndex = this.commandHistory.length;
+
+        // Display command in terminal
+        this.addToTerminal(`${this.getPromptText()}${command}`, 'command');
+
+        // Clear input
+        input.value = '';
+
+        // Execute command
+        this.socket.emit('execute-command', {
+            sessionId: this.sessionId,
+            command: command
+        });
+    }
+
+    handleCommandResult(result) {
+        if (result.error) {
+            this.addToTerminal(result.error, 'error');
+        } else {
+            if (result.output) {
+                this.addToTerminal(result.output, 'output');
+            }
+            if (result.currentDir) {
+                this.currentDirectory = result.currentDir;
+                this.updatePrompt();
+                this.updateCurrentPath();
+                this.loadDirectoryListing();
+            }
+        }
+    }
+
+    addToTerminal(text, type = 'output') {
+        const output = document.getElementById('terminal-output');
+        const div = document.createElement('div');
+        div.className = `terminal-line ${type}`;
+        div.textContent = text;
+        output.appendChild(div);
+        output.scrollTop = output.scrollHeight;
+    }
+
+    getPromptText() {
+        return `${this.currentUser?.username || 'user'}@mukuvi:${this.currentDirectory}$ `;
+    }
+
+    updatePrompt() {
+        document.getElementById('terminal-prompt').textContent = this.getPromptText();
+    }
+
+    updateCurrentPath() {
+        document.getElementById('current-directory').textContent = this.currentDirectory;
+    }
+
+    navigateHistory(direction) {
+        if (this.commandHistory.length === 0) return;
+
+        this.historyIndex += direction;
+        
+        if (this.historyIndex < 0) {
+            this.historyIndex = 0;
+        } else if (this.historyIndex >= this.commandHistory.length) {
+            this.historyIndex = this.commandHistory.length;
+            document.getElementById('terminal-input').value = '';
+            return;
+        }
+
+        document.getElementById('terminal-input').value = this.commandHistory[this.historyIndex] || '';
+    }
+
+    loadDirectoryListing() {
+        this.socket.emit('get-directory-listing', {
+            sessionId: this.sessionId,
+            path: this.currentDirectory
+        });
+    }
+
+    updateFileManager(data) {
+        const fileList = document.getElementById('file-list');
+        fileList.innerHTML = '';
+
+        if (data.error) {
+            fileList.innerHTML = `<div class="error">${data.error}</div>`;
+            return;
+        }
+
+        data.entries.forEach(entry => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <div class="file-icon ${entry.type}">
+                    ${entry.type === 'directory' ? '📁' : '📄'}
+                </div>
+                <div class="file-name">${entry.name}</div>
+            `;
+            
+            fileItem.addEventListener('dblclick', () => {
+                if (entry.type === 'directory') {
+                    this.changeDirectory(entry.name);
+                }
+            });
+
+            fileList.appendChild(fileItem);
+        });
+    }
+
+    changeDirectory(dirName) {
+        const newPath = this.currentDirectory === '/' ? `/${dirName}` : `${this.currentDirectory}/${dirName}`;
+        this.socket.emit('execute-command', {
+            sessionId: this.sessionId,
+            command: `cd ${newPath}`
+        });
+    }
+
+    createNewFolder() {
+        const name = prompt('Enter folder name:');
+        if (name) {
+            this.socket.emit('execute-command', {
+                sessionId: this.sessionId,
+                command: `mkdir ${name}`
+            });
+        }
+    }
+
+    createNewFile() {
+        const name = prompt('Enter file name:');
+        if (name) {
+            this.socket.emit('execute-command', {
+                sessionId: this.sessionId,
+                command: `touch ${name}`
+            });
+        }
+    }
+
+    async loadSystemInfo() {
+        try {
+            const response = await fetch('/api/system-info');
+            const sysInfo = await response.json();
+            
+            const systemInfoDiv = document.getElementById('system-info');
+            systemInfoDiv.innerHTML = `
+                <div class="info-item">
+                    <span class="info-label">OS Name:</span>
+                    <span class="info-value">${sysInfo.osName}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Version:</span>
+                    <span class="info-value">${sysInfo.version}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Boot Time:</span>
+                    <span class="info-value">${new Date(sysInfo.bootTime).toLocaleString()}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Uptime:</span>
+                    <span class="info-value">${Math.floor(sysInfo.uptime / 1000)}s</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Processes:</span>
+                    <span class="info-value">${sysInfo.processCount}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Users:</span>
+                    <span class="info-value">${sysInfo.userCount}</span>
+                </div>
+            `;
+        } catch (error) {
+            console.error('Failed to load system info:', error);
+        }
+    }
+
+    loadProcessList() {
+        this.socket.emit('execute-command', {
+            sessionId: this.sessionId,
+            command: 'ps'
+        });
+    }
+
+    startClock() {
+        const updateClock = () => {
+            const now = new Date();
+            document.getElementById('clock-time').textContent = now.toLocaleTimeString();
+            document.getElementById('current-user').textContent = this.currentUser?.username || 'Guest';
+        };
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+}
+
+// Initialize the GUI when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    new MukuviGUI();
+});

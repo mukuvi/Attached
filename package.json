@@ -7,6 +7,7 @@
   "scripts": {
     "setup": "node src/installer/install.js",
     "boot": "node src/kernel/boot.js",
+    "gui": "node src/gui/gui-server.js",
     "dev": "node src/kernel/boot.js --dev",
     "test": "node src/tests/test-runner.js"
   },
@@ -18,7 +19,10 @@
     "inquirer": "^9.2.12",
     "figlet": "^1.7.0",
     "node-pty": "^1.0.0",
-    "blessed": "^0.1.81"
+    "blessed": "^0.1.81",
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "cors": "^2.8.5"
   },
   "engines": {
     "node": ">=18.0.0"

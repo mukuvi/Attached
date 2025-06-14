@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mukuvi OS - Graphical Interface</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div id="boot-screen" class="boot-screen">
+        <div class="boot-content">
+            <div class="logo">
+                <pre class="ascii-art">
+ __  __       _                   _    ___  ____  
+|  \/  |_   _| | ___   ___   __ _(_)  / _ \/ ___| 
+| |\/| | | | | |/ / | | \ \ / / | | | | | | \___ \ 
+| |  | | |_| |   <| |_| |\ V /| | | | |_| |___) |
+|_|  |_|\__,_|_|\_\\__,_| \_/ |_|_|  \___/|____/ 
+                </pre>
+            </div>
+            <div class="boot-text">
+                <p>Mukuvi Operating System</p>
+                <p class="version">Version 1.0.0 - Graphical Interface</p>
+            </div>
+            <div class="loading">
+                <div class="loading-bar">
+                    <div class="loading-progress"></div>
+                </div>
+                <p class="loading-text">Initializing system...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="login-screen" class="login-screen hidden">
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Mukuvi OS Login</h2>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="input-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <div id="login-error" class="error-message hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="desktop" class="desktop hidden">
+        <div class="taskbar">
+            <div class="taskbar-left">
+                <div class="start-menu">
+                    <span class="logo-small">Mukuvi OS</span>
+                </div>
+                <div class="current-path">
+                    <span id="current-directory">/</span>
+                </div>
+            </div>
+            <div class="taskbar-right">
+                <div class="system-info">
+                    <span id="current-user"></span>
+                </div>
+                <div class="clock">
+                    <span id="clock-time"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="desktop-content">
+            <div class="window terminal-window">
+                <div class="window-header">
+                    <div class="window-controls">
+                        <span class="control close"></span>
+                        <span class="control minimize"></span>
+                        <span class="control maximize"></span>
+                    </div>
+                    <div class="window-title">Terminal</div>
+                </div>
+                <div class="window-content">
+                    <div id="terminal" class="terminal">
+                        <div id="terminal-output" class="terminal-output"></div>
+                        <div class="terminal-input-line">
+                            <span id="terminal-prompt" class="terminal-prompt"></span>
+                            <input type="text" id="terminal-input" class="terminal-input" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="window file-manager-window">
+                <div class="window-header">
+                    <div class="window-controls">
+                        <span class="control close"></span>
+                        <span class="control minimize"></span>
+                        <span class="control maximize"></span>
+                    </div>
+                    <div class="window-title">File Manager</div>
+                </div>
+                <div class="window-content">
+                    <div class="file-manager">
+                        <div class="file-manager-toolbar">
+                            <button id="refresh-btn" class="toolbar-btn">Refresh</button>
+                            <button id="new-folder-btn" class="toolbar-btn">New Folder</button>
+                            <button id="new-file-btn" class="toolbar-btn">New File</button>
+                        </div>
+                        <div id="file-list" class="file-list">
+                            <!-- Files will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="window system-monitor-window">
+                <div class="window-header">
+                    <div class="window-controls">
+                        <span class="control close"></span>
+                        <span class="control minimize"></span>
+                        <span class="control maximize"></span>
+                    </div>
+                    <div class="window-title">System Monitor</div>
+                </div>
+                <div class="window-content">
+                    <div class="system-monitor">
+                        <div class="system-info-grid">
+                            <div class="info-card">
+                                <h3>System Information</h3>
+                                <div id="system-info">
+                                    <!-- System info will be populated here -->
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <h3>Running Processes</h3>
+                                <div id="process-list">
+                                    <!-- Process list will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

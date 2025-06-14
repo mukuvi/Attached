@@ -1024,10 +1024,10 @@ export class AdvancedCommands {
   }
 
   async wireshark(args) {
-    const interface = args[0] || 'eth0';
+    const iface = args[0] || 'eth0';
     
     let output = chalk.cyan(`🦈 Wireshark Network Analyzer\n`);
-    output += chalk.cyan(`Interface: ${interface}\n\n`);
+    output += chalk.cyan(`Interface: ${iface}\n\n`);
     output += chalk.yellow('Starting packet capture...\n');
     output += chalk.green('Captured 1234 packets\n');
     output += chalk.cyan('Use GUI mode for detailed analysis\n');
@@ -1037,10 +1037,10 @@ export class AdvancedCommands {
   }
 
   async tcpdump(args) {
-    const interface = args[0] || 'eth0';
+    const iface = args[0] || 'eth0';
     
     let output = chalk.cyan(`📡 tcpdump - Network Packet Analyzer\n`);
-    output += chalk.cyan(`Interface: ${interface}\n\n`);
+    output += chalk.cyan(`Interface: ${iface}\n\n`);
     output += '12:34:56.789012 IP 192.168.1.100.22 > 192.168.1.1.54321: Flags [P.], seq 1:29, ack 1, win 65535\n';
     output += '12:34:56.789123 IP 192.168.1.1.54321 > 192.168.1.100.22: Flags [.], ack 29, win 65535\n';
     output += '12:34:56.789234 IP 192.168.1.100.80 > 192.168.1.1.54322: Flags [S.], seq 0, ack 1, win 65535\n';

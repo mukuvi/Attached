@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mukuvi OS - Graphical Interface</title>
+    <title>Mukuvi OS - Complete Hacking & Programming Environment</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
+    <!-- Boot Screen -->
     <div id="boot-screen" class="boot-screen">
         <div class="boot-content">
             <div class="logo">
@@ -22,7 +24,7 @@
             </div>
             <div class="boot-text">
                 <p>Mukuvi Operating System</p>
-                <p class="version">Version 1.0.0 - Graphical Interface</p>
+                <p class="version">Complete Hacking & Programming Environment</p>
             </div>
             <div class="loading">
                 <div class="loading-bar">
@@ -33,10 +35,12 @@
         </div>
     </div>
 
+    <!-- Login Screen -->
     <div id="login-screen" class="login-screen hidden">
         <div class="login-container">
             <div class="login-header">
-                <h2>Mukuvi OS Login</h2>
+                <h2>🔒 Mukuvi OS Login</h2>
+                <p>Complete Hacking & Programming Environment</p>
             </div>
             <form id="login-form" class="login-form">
                 <div class="input-group">
@@ -53,35 +57,123 @@
         </div>
     </div>
 
+    <!-- Desktop Environment -->
     <div id="desktop" class="desktop hidden">
-        <div class="taskbar">
-            <div class="taskbar-left">
-                <div class="start-menu">
-                    <span class="logo-small">Mukuvi OS</span>
-                </div>
-                <div class="current-path">
-                    <span id="current-directory">/</span>
+        <!-- Desktop Icons -->
+        <div class="desktop-icons">
+            <!-- Security Tools Category -->
+            <div class="icon-category">
+                <h3>🔒 Security Tools</h3>
+                <div class="icon-grid">
+                    <div class="desktop-icon" data-app="wifi-scanner">
+                        <i class="fas fa-wifi"></i>
+                        <span>WiFi Scanner</span>
+                    </div>
+                    <div class="desktop-icon" data-app="metasploit">
+                        <i class="fas fa-rocket"></i>
+                        <span>Metasploit</span>
+                    </div>
+                    <div class="desktop-icon" data-app="burpsuite">
+                        <i class="fas fa-spider"></i>
+                        <span>Burp Suite</span>
+                    </div>
+                    <div class="desktop-icon" data-app="nmap">
+                        <i class="fas fa-search"></i>
+                        <span>Nmap Scanner</span>
+                    </div>
+                    <div class="desktop-icon" data-app="wireshark">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Wireshark</span>
+                    </div>
+                    <div class="desktop-icon" data-app="john">
+                        <i class="fas fa-key"></i>
+                        <span>John the Ripper</span>
+                    </div>
+                    <div class="desktop-icon" data-app="hashcat">
+                        <i class="fas fa-lock-open"></i>
+                        <span>Hashcat</span>
+                    </div>
+                    <div class="desktop-icon" data-app="social-engineer">
+                        <i class="fas fa-user-secret"></i>
+                        <span>Social Engineer</span>
+                    </div>
                 </div>
             </div>
-            <div class="taskbar-right">
-                <div class="system-info">
-                    <span id="current-user"></span>
+
+            <!-- Programming Tools Category -->
+            <div class="icon-category">
+                <h3>💻 Programming</h3>
+                <div class="icon-grid">
+                    <div class="desktop-icon" data-app="vscode">
+                        <i class="fas fa-code"></i>
+                        <span>VS Code</span>
+                    </div>
+                    <div class="desktop-icon" data-app="python">
+                        <i class="fab fa-python"></i>
+                        <span>Python</span>
+                    </div>
+                    <div class="desktop-icon" data-app="nodejs">
+                        <i class="fab fa-node-js"></i>
+                        <span>Node.js</span>
+                    </div>
+                    <div class="desktop-icon" data-app="git">
+                        <i class="fab fa-git-alt"></i>
+                        <span>Git</span>
+                    </div>
+                    <div class="desktop-icon" data-app="docker">
+                        <i class="fab fa-docker"></i>
+                        <span>Docker</span>
+                    </div>
+                    <div class="desktop-icon" data-app="project-creator">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Create Project</span>
+                    </div>
                 </div>
-                <div class="clock">
-                    <span id="clock-time"></span>
+            </div>
+
+            <!-- System Administration Category -->
+            <div class="icon-category">
+                <h3>⚙️ System Admin</h3>
+                <div class="icon-grid">
+                    <div class="desktop-icon" data-app="package-manager">
+                        <i class="fas fa-box"></i>
+                        <span>Package Manager</span>
+                    </div>
+                    <div class="desktop-icon" data-app="service-manager">
+                        <i class="fas fa-cogs"></i>
+                        <span>Services</span>
+                    </div>
+                    <div class="desktop-icon" data-app="system-monitor">
+                        <i class="fas fa-chart-line"></i>
+                        <span>System Monitor</span>
+                    </div>
+                    <div class="desktop-icon" data-app="firewall">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Firewall</span>
+                    </div>
+                    <div class="desktop-icon" data-app="file-manager">
+                        <i class="fas fa-folder"></i>
+                        <span>File Manager</span>
+                    </div>
+                    <div class="desktop-icon" data-app="terminal">
+                        <i class="fas fa-terminal"></i>
+                        <span>Terminal</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="desktop-content">
-            <div class="window terminal-window">
+        <!-- Application Windows -->
+        <div class="application-windows">
+            <!-- Terminal Window -->
+            <div id="terminal-window" class="app-window hidden">
                 <div class="window-header">
                     <div class="window-controls">
-                        <span class="control close"></span>
-                        <span class="control minimize"></span>
-                        <span class="control maximize"></span>
+                        <span class="control close" data-action="close"></span>
+                        <span class="control minimize" data-action="minimize"></span>
+                        <span class="control maximize" data-action="maximize"></span>
                     </div>
-                    <div class="window-title">Terminal</div>
+                    <div class="window-title">🔒 Mukuvi Security Terminal</div>
                 </div>
                 <div class="window-content">
                     <div id="terminal" class="terminal">
@@ -94,53 +186,332 @@
                 </div>
             </div>
 
-            <div class="window file-manager-window">
+            <!-- WiFi Scanner Window -->
+            <div id="wifi-scanner-window" class="app-window hidden">
                 <div class="window-header">
                     <div class="window-controls">
-                        <span class="control close"></span>
-                        <span class="control minimize"></span>
-                        <span class="control maximize"></span>
+                        <span class="control close" data-action="close"></span>
+                        <span class="control minimize" data-action="minimize"></span>
+                        <span class="control maximize" data-action="maximize"></span>
                     </div>
-                    <div class="window-title">File Manager</div>
+                    <div class="window-title">📡 WiFi Security Scanner</div>
                 </div>
                 <div class="window-content">
-                    <div class="file-manager">
-                        <div class="file-manager-toolbar">
-                            <button id="refresh-btn" class="toolbar-btn">Refresh</button>
-                            <button id="new-folder-btn" class="toolbar-btn">New Folder</button>
-                            <button id="new-file-btn" class="toolbar-btn">New File</button>
+                    <div class="wifi-scanner">
+                        <div class="toolbar">
+                            <button id="wifi-scan-btn" class="btn primary">🔍 Scan Networks</button>
+                            <button id="wifi-capture-btn" class="btn secondary">📡 Capture Handshake</button>
+                            <button id="wifi-crack-btn" class="btn danger">🔓 Crack Password</button>
                         </div>
-                        <div id="file-list" class="file-list">
-                            <!-- Files will be populated here -->
+                        <div id="wifi-results" class="results-area">
+                            <p>Click "Scan Networks" to discover WiFi networks</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="window system-monitor-window">
+            <!-- Metasploit Window -->
+            <div id="metasploit-window" class="app-window hidden">
                 <div class="window-header">
                     <div class="window-controls">
-                        <span class="control close"></span>
-                        <span class="control minimize"></span>
-                        <span class="control maximize"></span>
+                        <span class="control close" data-action="close"></span>
+                        <span class="control minimize" data-action="minimize"></span>
+                        <span class="control maximize" data-action="maximize"></span>
                     </div>
-                    <div class="window-title">System Monitor</div>
+                    <div class="window-title">🚀 Metasploit Framework</div>
+                </div>
+                <div class="window-content">
+                    <div class="metasploit">
+                        <div class="toolbar">
+                            <button id="msf-exploits-btn" class="btn primary">💥 Exploits</button>
+                            <button id="msf-payloads-btn" class="btn secondary">🎯 Payloads</button>
+                            <button id="msf-sessions-btn" class="btn success">📱 Sessions</button>
+                            <button id="msf-launch-btn" class="btn danger">🚀 Launch Attack</button>
+                        </div>
+                        <div id="metasploit-content" class="content-area">
+                            <div class="exploit-grid">
+                                <div class="exploit-card" data-exploit="ms17-010">
+                                    <h4>EternalBlue (MS17-010)</h4>
+                                    <p>SMB Remote Code Execution</p>
+                                    <span class="severity critical">Critical</span>
+                                </div>
+                                <div class="exploit-card" data-exploit="shellshock">
+                                    <h4>Shellshock</h4>
+                                    <p>Bash Remote Code Execution</p>
+                                    <span class="severity critical">Critical</span>
+                                </div>
+                                <div class="exploit-card" data-exploit="heartbleed">
+                                    <h4>Heartbleed</h4>
+                                    <p>OpenSSL Memory Disclosure</p>
+                                    <span class="severity high">High</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Package Manager Window -->
+            <div id="package-manager-window" class="app-window hidden">
+                <div class="window-header">
+                    <div class="window-controls">
+                        <span class="control close" data-action="close"></span>
+                        <span class="control minimize" data-action="minimize"></span>
+                        <span class="control maximize" data-action="maximize"></span>
+                    </div>
+                    <div class="window-title">📦 Package Manager</div>
+                </div>
+                <div class="window-content">
+                    <div class="package-manager">
+                        <div class="toolbar">
+                            <input type="text" id="package-search" placeholder="Search packages..." class="search-input">
+                            <button id="package-update-btn" class="btn primary">🔄 Update All</button>
+                        </div>
+                        <div class="package-categories">
+                            <div class="category-tabs">
+                                <button class="tab-btn active" data-category="security">🔒 Security</button>
+                                <button class="tab-btn" data-category="development">💻 Development</button>
+                                <button class="tab-btn" data-category="system">⚙️ System</button>
+                                <button class="tab-btn" data-category="installed">✅ Installed</button>
+                            </div>
+                            <div id="package-list" class="package-list">
+                                <!-- Packages will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Manager Window -->
+            <div id="service-manager-window" class="app-window hidden">
+                <div class="window-header">
+                    <div class="window-controls">
+                        <span class="control close" data-action="close"></span>
+                        <span class="control minimize" data-action="minimize"></span>
+                        <span class="control maximize" data-action="maximize"></span>
+                    </div>
+                    <div class="window-title">⚙️ Service Manager</div>
+                </div>
+                <div class="window-content">
+                    <div class="service-manager">
+                        <div class="toolbar">
+                            <button id="service-refresh-btn" class="btn primary">🔄 Refresh</button>
+                            <button id="service-start-all-btn" class="btn success">▶️ Start All</button>
+                            <button id="service-stop-all-btn" class="btn danger">⏹️ Stop All</button>
+                        </div>
+                        <div id="service-list" class="service-list">
+                            <!-- Services will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Creator Window -->
+            <div id="project-creator-window" class="app-window hidden">
+                <div class="window-header">
+                    <div class="window-controls">
+                        <span class="control close" data-action="close"></span>
+                        <span class="control minimize" data-action="minimize"></span>
+                        <span class="control maximize" data-action="maximize"></span>
+                    </div>
+                    <div class="window-title">🚀 Project Creator</div>
+                </div>
+                <div class="window-content">
+                    <div class="project-creator">
+                        <div class="form-section">
+                            <h3>Create New Project</h3>
+                            <div class="form-group">
+                                <label for="project-name">Project Name:</label>
+                                <input type="text" id="project-name" placeholder="my-awesome-project">
+                            </div>
+                            <div class="form-group">
+                                <label for="project-type">Project Type:</label>
+                                <select id="project-type">
+                                    <option value="web">Web Application</option>
+                                    <option value="python">Python Project</option>
+                                    <option value="node">Node.js Project</option>
+                                    <option value="react">React Application</option>
+                                    <option value="exploit">Security Tool/Exploit</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-template">Template:</label>
+                                <select id="project-template">
+                                    <option value="basic">Basic Template</option>
+                                    <option value="advanced">Advanced Template</option>
+                                    <option value="minimal">Minimal Template</option>
+                                </select>
+                            </div>
+                            <button id="create-project-btn" class="btn primary large">🚀 Create Project</button>
+                        </div>
+                        <div id="project-status" class="status-area">
+                            <p>Ready to create a new project</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Monitor Window -->
+            <div id="system-monitor-window" class="app-window hidden">
+                <div class="window-header">
+                    <div class="window-controls">
+                        <span class="control close" data-action="close"></span>
+                        <span class="control minimize" data-action="minimize"></span>
+                        <span class="control maximize" data-action="maximize"></span>
+                    </div>
+                    <div class="window-title">📊 System Monitor</div>
                 </div>
                 <div class="window-content">
                     <div class="system-monitor">
-                        <div class="system-info-grid">
-                            <div class="info-card">
-                                <h3>System Information</h3>
-                                <div id="system-info">
+                        <div class="monitor-grid">
+                            <div class="monitor-card">
+                                <h4>💻 System Info</h4>
+                                <div id="system-info-display">
                                     <!-- System info will be populated here -->
                                 </div>
                             </div>
-                            <div class="info-card">
-                                <h3>Running Processes</h3>
-                                <div id="process-list">
+                            <div class="monitor-card">
+                                <h4>🔄 Running Processes</h4>
+                                <div id="process-list-display">
                                     <!-- Process list will be populated here -->
                                 </div>
                             </div>
+                            <div class="monitor-card">
+                                <h4>🌐 Network Connections</h4>
+                                <div id="network-connections">
+                                    <!-- Network info will be populated here -->
+                                </div>
+                            </div>
+                            <div class="monitor-card">
+                                <h4>💾 Memory Usage</h4>
+                                <div id="memory-usage">
+                                    <!-- Memory info will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Taskbar -->
+        <div class="taskbar">
+            <div class="taskbar-left">
+                <div class="start-menu" id="start-menu-btn">
+                    <i class="fas fa-skull-crossbones"></i>
+                    <span>Mukuvi OS</span>
+                </div>
+                <div class="quick-launch">
+                    <div class="quick-icon" data-app="terminal" title="Terminal">
+                        <i class="fas fa-terminal"></i>
+                    </div>
+                    <div class="quick-icon" data-app="file-manager" title="File Manager">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <div class="quick-icon" data-app="wifi-scanner" title="WiFi Scanner">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="quick-icon" data-app="metasploit" title="Metasploit">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                </div>
+                <div class="current-path">
+                    <span id="current-directory">/</span>
+                </div>
+            </div>
+            <div class="taskbar-center">
+                <div class="running-apps" id="running-apps">
+                    <!-- Running app indicators will appear here -->
+                </div>
+            </div>
+            <div class="taskbar-right">
+                <div class="system-tray">
+                    <div class="tray-icon" title="Network">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="tray-icon" title="Security Status">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="tray-icon" title="AI Assistant">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                </div>
+                <div class="system-info">
+                    <span id="current-user"></span>
+                </div>
+                <div class="clock">
+                    <span id="clock-time"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Start Menu -->
+        <div id="start-menu" class="start-menu-panel hidden">
+            <div class="start-menu-header">
+                <h3>🔒 Mukuvi OS</h3>
+                <p>Complete Hacking & Programming Environment</p>
+            </div>
+            <div class="start-menu-content">
+                <div class="menu-category">
+                    <h4>🔒 Security Tools</h4>
+                    <div class="menu-items">
+                        <div class="menu-item" data-app="wifi-scanner">
+                            <i class="fas fa-wifi"></i>
+                            <span>WiFi Scanner</span>
+                        </div>
+                        <div class="menu-item" data-app="metasploit">
+                            <i class="fas fa-rocket"></i>
+                            <span>Metasploit</span>
+                        </div>
+                        <div class="menu-item" data-app="burpsuite">
+                            <i class="fas fa-spider"></i>
+                            <span>Burp Suite</span>
+                        </div>
+                        <div class="menu-item" data-app="nmap">
+                            <i class="fas fa-search"></i>
+                            <span>Nmap Scanner</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-category">
+                    <h4>💻 Programming</h4>
+                    <div class="menu-items">
+                        <div class="menu-item" data-app="vscode">
+                            <i class="fas fa-code"></i>
+                            <span>VS Code</span>
+                        </div>
+                        <div class="menu-item" data-app="python">
+                            <i class="fab fa-python"></i>
+                            <span>Python</span>
+                        </div>
+                        <div class="menu-item" data-app="nodejs">
+                            <i class="fab fa-node-js"></i>
+                            <span>Node.js</span>
+                        </div>
+                        <div class="menu-item" data-app="project-creator">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>Create Project</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-category">
+                    <h4>⚙️ System</h4>
+                    <div class="menu-items">
+                        <div class="menu-item" data-app="package-manager">
+                            <i class="fas fa-box"></i>
+                            <span>Package Manager</span>
+                        </div>
+                        <div class="menu-item" data-app="service-manager">
+                            <i class="fas fa-cogs"></i>
+                            <span>Services</span>
+                        </div>
+                        <div class="menu-item" data-app="system-monitor">
+                            <i class="fas fa-chart-line"></i>
+                            <span>System Monitor</span>
+                        </div>
+                        <div class="menu-item" data-app="terminal">
+                            <i class="fas fa-terminal"></i>
+                            <span>Terminal</span>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,26 @@
+{
+  "name": "mukuvi-os",
+  "version": "1.0.0",
+  "description": "Mukuvi Operating System - A complete terminal-based OS",
+  "main": "src/kernel/boot.js",
+  "type": "module",
+  "scripts": {
+    "install": "node src/installer/install.js",
+    "boot": "node src/kernel/boot.js",
+    "dev": "node src/kernel/boot.js --dev",
+    "test": "node src/tests/test-runner.js"
+  },
+  "keywords": ["operating-system", "terminal", "mukuvi", "os"],
+  "author": "Mukuvi OS Team",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "inquirer": "^9.2.12",
+    "figlet": "^1.7.0",
+    "node-pty": "^1.0.0",
+    "blessed": "^0.1.81"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

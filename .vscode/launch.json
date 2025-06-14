@@ -1,0 +1,54 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🖥️ Start GUI Server",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/gui/gui-server.js",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "runtimeArgs": ["--experimental-modules"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "🔒 Boot Terminal OS",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/kernel/boot.js",
+      "console": "integratedTerminal",
+      "args": ["--dev"],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "runtimeArgs": ["--experimental-modules"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "🧪 Run Tests",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/tests/test-runner.js",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "runtimeArgs": ["--experimental-modules"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "⚙️ Setup System",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/installer/install.js",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "runtimeArgs": ["--experimental-modules"],
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ]
+}

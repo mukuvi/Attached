@@ -1,0 +1,33 @@
+{
+  "terminal.integrated.defaultProfile.windows": "Command Prompt",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "files.associations": {
+    "*.js": "javascript",
+    "*.json": "jsonc"
+  },
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml",
+    "*.js": "*.js.map",
+    "*.ts": "*.js, *.js.map"
+  },
+  "workbench.colorCustomizations": {
+    "terminal.background": "#0f0f23",
+    "terminal.foreground": "#00ff00",
+    "terminalCursor.background": "#00ffff",
+    "terminalCursor.foreground": "#00ffff"
+  },
+  "terminal.integrated.fontFamily": "JetBrains Mono, Consolas, 'Courier New', monospace",
+  "terminal.integrated.fontSize": 14,
+  "debug.console.fontFamily": "JetBrains Mono, Consolas, 'Courier New', monospace"
+}

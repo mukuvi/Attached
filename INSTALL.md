@@ -15,7 +15,7 @@
 
 2. **Run the Installer**
    ```bash
-   npm run install
+   npm run setup
    ```
 
 3. **Follow the Installation Wizard**

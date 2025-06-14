@@ -18,7 +18,7 @@ Mukuvi OS is a fully functional operating system that runs in your terminal. It 
 1. **Install the system:**
    ```bash
    npm install
-   npm run install
+   npm run setup
    ```
 
 2. **Boot the OS:**

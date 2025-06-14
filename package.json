@@ -5,7 +5,7 @@
   "main": "src/kernel/boot.js",
   "type": "module",
   "scripts": {
-    "install": "node src/installer/install.js",
+    "setup": "node src/installer/install.js",
     "boot": "node src/kernel/boot.js",
     "dev": "node src/kernel/boot.js --dev",
     "test": "node src/tests/test-runner.js"

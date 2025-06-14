@@ -1,7 +1,7 @@
 {
   "name": "mukuvi-os",
   "version": "1.0.0",
-  "description": "Mukuvi Operating System - A complete terminal-based OS",
+  "description": "Mukuvi Operating System - A complete terminal-based OS with advanced security features",
   "main": "src/kernel/boot.js",
   "type": "module",
   "scripts": {
@@ -11,7 +11,7 @@
     "dev": "node src/kernel/boot.js --dev",
     "test": "node src/tests/test-runner.js"
   },
-  "keywords": ["operating-system", "terminal", "mukuvi", "os"],
+  "keywords": ["operating-system", "terminal", "mukuvi", "os", "security", "hacking", "ai"],
   "author": "Mukuvi OS Team",
   "license": "GPL-3.0",
   "dependencies": {
@@ -22,7 +22,12 @@
     "blessed": "^0.1.81",
     "express": "^4.18.2",
     "socket.io": "^4.7.2",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "axios": "^1.6.0",
+    "openai": "^4.20.0",
+    "node-wifi": "^2.0.15",
+    "nmap": "^2.0.0",
+    "crypto": "^1.0.1"
   },
   "engines": {
     "node": ">=18.0.0"

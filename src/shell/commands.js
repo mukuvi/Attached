@@ -1,9 +1,13 @@
 import chalk from 'chalk';
 import figlet from 'figlet';
+import { SecurityCommands } from '../security/security-commands.js';
 
 export class Commands {
   constructor(osApi) {
     this.osApi = osApi;
+    this.securityCommands = new SecurityCommands(osApi);
+    
+    // Merge security commands with base commands
     this.commandMap = {
       'help': this.help.bind(this),
       'ls': this.ls.bind(this),
@@ -26,7 +30,9 @@ export class Commands {
       'banner': this.banner.bind(this),
       'history': this.history.bind(this),
       'date': this.date.bind(this),
-      'calc': this.calc.bind(this)
+      'calc': this.calc.bind(this),
+      // Add security commands
+      ...this.securityCommands.getCommands()
     };
   }
 
@@ -40,9 +46,10 @@ export class Commands {
 
   async help(args) {
     const commands = Object.keys(this.commandMap).sort();
-    let output = chalk.cyan('Available commands:\n\n');
+    let output = chalk.cyan('🖥️  Mukuvi OS - Advanced Security Operating System\n\n');
     
     const descriptions = {
+      // Basic commands
       'help': 'Show this help message',
       'ls': 'List directory contents',
       'cd': 'Change directory',
@@ -64,12 +71,51 @@ export class Commands {
       'banner': 'Show Mukuvi OS banner',
       'history': 'Show command history',
       'date': 'Show current date and time',
-      'calc': 'Simple calculator'
+      'calc': 'Simple calculator',
+      
+      // Security commands
+      'wifi-scan': 'Scan for WiFi networks',
+      'wifi-capture': 'Capture WPA handshakes',
+      'wifi-crack': 'Crack WiFi passwords',
+      'wifi-deauth': 'Deauthentication attacks',
+      'wifi-list': 'List WiFi scan results',
+      'nmap-scan': 'Network port scanning',
+      'vuln-scan': 'Vulnerability assessment',
+      'network-discovery': 'Discover network hosts',
+      'ai': 'Ask the AI security assistant',
+      'ai-history': 'View AI conversation history',
+      'exploit-db': 'Search exploit database',
+      'hash-crack': 'Password hash cracking',
+      'forensics': 'Digital forensics tools',
+      'security-audit': 'System security audit'
     };
 
-    for (const cmd of commands) {
-      output += chalk.yellow(cmd.padEnd(12)) + descriptions[cmd] + '\n';
+    // Group commands by category
+    const categories = {
+      '📁 File Operations': ['ls', 'cd', 'pwd', 'mkdir', 'touch', 'cat', 'rm'],
+      '💻 System Info': ['ps', 'whoami', 'uname', 'uptime', 'sysinfo', 'users'],
+      '🛠️  Utilities': ['echo', 'date', 'calc', 'clear', 'help', 'history', 'banner'],
+      '🔒 WiFi Security': ['wifi-scan', 'wifi-capture', 'wifi-crack', 'wifi-deauth', 'wifi-list'],
+      '🌐 Network Security': ['nmap-scan', 'vuln-scan', 'network-discovery'],
+      '🤖 AI Assistant': ['ai', 'ai-history'],
+      '🔍 Security Tools': ['exploit-db', 'hash-crack', 'forensics', 'security-audit'],
+      '⚡ System Control': ['exit', 'shutdown']
+    };
+
+    for (const [category, categoryCommands] of Object.entries(categories)) {
+      output += chalk.yellow(`${category}:\n`);
+      for (const cmd of categoryCommands) {
+        if (descriptions[cmd]) {
+          output += chalk.green(`  ${cmd.padEnd(18)}`) + descriptions[cmd] + '\n';
+        }
+      }
+      output += '\n';
     }
+
+    output += chalk.cyan('💡 Tips:\n');
+    output += chalk.white('  • Use "ai <question>" to get help with security topics\n');
+    output += chalk.white('  • Always use security tools ethically and legally\n');
+    output += chalk.white('  • Type "help <command>" for detailed command info\n');
 
     return { output, exit: false };
   }
@@ -82,7 +128,8 @@ export class Commands {
       let output = '';
       for (const entry of entries) {
         const color = entry.type === 'directory' ? chalk.blue : chalk.white;
-        output += color(entry.name) + '\n';
+        const icon = entry.type === 'directory' ? '📁' : '📄';
+        output += color(`${icon} ${entry.name}`) + '\n';
       }
       
       return { output, exit: false };
@@ -113,7 +160,7 @@ export class Commands {
 
     try {
       await this.osApi.fileSystem.createDirectory(args[0]);
-      return { output: '', exit: false };
+      return { output: chalk.green(`📁 Directory '${args[0]}' created`), exit: false };
     } catch (error) {
       return { output: chalk.red(`mkdir: ${error.message}`), exit: false };
     }
@@ -126,7 +173,7 @@ export class Commands {
 
     try {
       await this.osApi.fileSystem.writeFile(args[0], '');
-      return { output: '', exit: false };
+      return { output: chalk.green(`📄 File '${args[0]}' created`), exit: false };
     } catch (error) {
       return { output: chalk.red(`touch: ${error.message}`), exit: false };
     }
@@ -156,7 +203,7 @@ export class Commands {
 
     try {
       await this.osApi.fileSystem.deleteFile(args[0]);
-      return { output: '', exit: false };
+      return { output: chalk.green(`🗑️  File '${args[0]}' removed`), exit: false };
     } catch (error) {
       return { output: chalk.red(`rm: ${error.message}`), exit: false };
     }
@@ -165,7 +212,7 @@ export class Commands {
   async ps() {
     const processes = this.osApi.processManager.getAllProcesses();
     let output = chalk.cyan('PID\tNAME\t\tSTATUS\t\tSTART TIME\n');
-    output += chalk.cyan('---\t----\t\t------\t\t----------\n');
+    output += chalk.cyan('───\t────\t\t──────\t\t──────────\n');
     
     for (const proc of processes) {
       output += `${proc.pid}\t${proc.name.padEnd(12)}\t${proc.status.padEnd(8)}\t${proc.startTime.toLocaleTimeString()}\n`;
@@ -175,12 +222,12 @@ export class Commands {
   }
 
   async whoami(args, user) {
-    return { output: user.username, exit: false };
+    return { output: `${user.username} (${user.fullName})`, exit: false };
   }
 
   async uname() {
     const sysInfo = this.osApi.getSystemInfo();
-    return { output: `${sysInfo.osName} ${sysInfo.version}`, exit: false };
+    return { output: `${sysInfo.osName} ${sysInfo.version} - Security Edition`, exit: false };
   }
 
   async uptime() {
@@ -192,7 +239,7 @@ export class Commands {
     const seconds = uptimeSeconds % 60;
     
     return { 
-      output: `up ${hours}h ${minutes}m ${seconds}s`, 
+      output: `⏱️  up ${hours}h ${minutes}m ${seconds}s`, 
       exit: false 
     };
   }
@@ -203,7 +250,7 @@ export class Commands {
   }
 
   async exit() {
-    return { output: chalk.yellow('Goodbye!'), exit: true };
+    return { output: chalk.yellow('👋 Goodbye! Stay secure!'), exit: true };
   }
 
   async shutdown() {
@@ -213,11 +260,12 @@ export class Commands {
 
   async users() {
     const users = await this.osApi.userManager.getAllUsers();
-    let output = chalk.cyan('USERNAME\tFULL NAME\t\tCREATED\n');
-    output += chalk.cyan('--------\t---------\t\t-------\n');
+    let output = chalk.cyan('USERNAME\tFULL NAME\t\tCREATED\t\tADMIN\n');
+    output += chalk.cyan('────────\t─────────\t\t───────\t\t─────\n');
     
     for (const user of users) {
-      output += `${user.username.padEnd(12)}\t${user.fullName.padEnd(16)}\t${new Date(user.createdAt).toLocaleDateString()}\n`;
+      const adminStatus = user.isAdmin ? chalk.green('Yes') : chalk.gray('No');
+      output += `${user.username.padEnd(12)}\t${user.fullName.padEnd(16)}\t${new Date(user.createdAt).toLocaleDateString()}\t${adminStatus}\n`;
     }
     
     return { output, exit: false };
@@ -225,16 +273,24 @@ export class Commands {
 
   async sysinfo() {
     const sysInfo = this.osApi.getSystemInfo();
-    let output = chalk.cyan('=== Mukuvi OS System Information ===\n\n');
-    output += `OS Name: ${sysInfo.osName}\n`;
-    output += `Version: ${sysInfo.version}\n`;
-    output += `Boot Time: ${sysInfo.bootTime.toLocaleString()}\n`;
-    output += `Uptime: ${Math.floor(sysInfo.uptime / 1000)} seconds\n`;
-    output += `Processes: ${sysInfo.processCount}\n`;
-    output += `Active Users: ${sysInfo.userCount}\n`;
-    output += `Node.js Version: ${process.version}\n`;
-    output += `Platform: ${process.platform}\n`;
-    output += `Architecture: ${process.arch}\n`;
+    let output = chalk.cyan('🖥️  Mukuvi OS System Information\n');
+    output += chalk.cyan('═'.repeat(40) + '\n\n');
+    output += `${chalk.yellow('OS Name:')} ${sysInfo.osName}\n`;
+    output += `${chalk.yellow('Version:')} ${sysInfo.version}\n`;
+    output += `${chalk.yellow('Edition:')} Security & Penetration Testing\n`;
+    output += `${chalk.yellow('Boot Time:')} ${sysInfo.bootTime.toLocaleString()}\n`;
+    output += `${chalk.yellow('Uptime:')} ${Math.floor(sysInfo.uptime / 1000)} seconds\n`;
+    output += `${chalk.yellow('Processes:')} ${sysInfo.processCount}\n`;
+    output += `${chalk.yellow('Active Users:')} ${sysInfo.userCount}\n`;
+    output += `${chalk.yellow('Node.js Version:')} ${process.version}\n`;
+    output += `${chalk.yellow('Platform:')} ${process.platform}\n`;
+    output += `${chalk.yellow('Architecture:')} ${process.arch}\n\n`;
+    output += chalk.green('🔒 Security Features Enabled:\n');
+    output += chalk.white('  • WiFi Security Testing\n');
+    output += chalk.white('  • Network Vulnerability Scanning\n');
+    output += chalk.white('  • AI Security Assistant\n');
+    output += chalk.white('  • Digital Forensics Tools\n');
+    output += chalk.white('  • Exploit Database Access\n');
     
     return { output, exit: false };
   }
@@ -242,19 +298,21 @@ export class Commands {
   async banner() {
     const banner = figlet.textSync('MUKUVI OS', { horizontalLayout: 'full' });
     const output = chalk.cyan(banner) + '\n' + 
-                  chalk.yellow('Welcome to Mukuvi Operating System') + '\n' +
-                  chalk.gray('A complete terminal-based OS experience');
+                  chalk.yellow('🔒 Advanced Security Operating System') + '\n' +
+                  chalk.green('🛡️  Penetration Testing & Digital Forensics Platform') + '\n' +
+                  chalk.gray('Built for ethical hackers and security professionals') + '\n\n' +
+                  chalk.white('Features: WiFi Security • Network Scanning • AI Assistant • Forensics');
     
     return { output, exit: false };
   }
 
   async history() {
-    // This would need to be implemented with shell history tracking
-    return { output: chalk.gray('Command history not implemented yet'), exit: false };
+    return { output: chalk.gray('📚 Command history feature coming soon...'), exit: false };
   }
 
   async date() {
-    return { output: new Date().toString(), exit: false };
+    const now = new Date();
+    return { output: `📅 ${now.toString()}`, exit: false };
   }
 
   async calc(args) {
@@ -264,10 +322,9 @@ export class Commands {
 
     try {
       const expression = args.join(' ');
-      // Simple calculator - only allow basic math operations for security
       const sanitized = expression.replace(/[^0-9+\-*/.() ]/g, '');
       const result = eval(sanitized);
-      return { output: `${expression} = ${result}`, exit: false };
+      return { output: `🧮 ${expression} = ${result}`, exit: false };
     } catch (error) {
       return { output: chalk.red('calc: invalid expression'), exit: false };
     }

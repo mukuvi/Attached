@@ -33,17 +33,18 @@ class MukuviGUI {
         const loadingText = document.querySelector('.loading-text');
         
         const bootMessages = [
-            'Initializing kernel...',
-            'Loading system services...',
-            'Starting file system...',
-            'Initializing user manager...',
-            'Loading GUI components...',
-            'System ready!'
+            'Initializing Mukuvi Security Kernel...',
+            'Loading WiFi hacking modules...',
+            'Starting AI assistant ARIA...',
+            'Initializing network scanners...',
+            'Loading exploit database...',
+            'Starting forensics tools...',
+            'Security systems ready!'
         ];
 
         for (let i = 0; i < bootMessages.length; i++) {
             loadingText.textContent = bootMessages[i];
-            await this.sleep(500);
+            await this.sleep(600);
         }
 
         await this.sleep(1000);
@@ -63,9 +64,27 @@ class MukuviGUI {
         this.loadSystemInfo();
         this.loadDirectoryListing();
         this.loadProcessList();
+        this.showWelcomeMessage();
         
         // Focus terminal input
         document.getElementById('terminal-input').focus();
+    }
+
+    showWelcomeMessage() {
+        const welcomeMsg = `🔒 Welcome to Mukuvi OS Security Edition!
+
+Available security tools:
+• wifi-scan - Discover WiFi networks
+• nmap-scan - Network port scanning  
+• ai <question> - Ask security AI assistant
+• vuln-scan - Vulnerability assessment
+• exploit-db - Search exploits
+• forensics - Digital forensics tools
+
+Type 'help' for full command list.
+Remember: Use tools ethically and legally! 🛡️`;
+
+        this.addToTerminal(welcomeMsg, 'welcome');
     }
 
     setupSocketListeners() {
@@ -75,6 +94,10 @@ class MukuviGUI {
 
         this.socket.on('directory-listing', (data) => {
             this.updateFileManager(data);
+        });
+
+        this.socket.on('security-alert', (alert) => {
+            this.showSecurityAlert(alert);
         });
     }
 
@@ -96,6 +119,9 @@ class MukuviGUI {
             } else if (e.key === 'ArrowDown') {
                 e.preventDefault();
                 this.navigateHistory(1);
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                this.autoComplete();
             }
         });
 
@@ -112,6 +138,9 @@ class MukuviGUI {
             this.createNewFile();
         });
 
+        // Security tools shortcuts
+        this.addSecurityShortcuts();
+
         // Window controls
         document.querySelectorAll('.control.close').forEach(control => {
             control.addEventListener('click', (e) => {
@@ -125,6 +154,50 @@ class MukuviGUI {
                 window.style.transform = window.style.transform === 'scale(0.1)' ? 'scale(1)' : 'scale(0.1)';
             });
         });
+    }
+
+    addSecurityShortcuts() {
+        // Add quick access buttons for security tools
+        const toolbar = document.querySelector('.file-manager-toolbar');
+        
+        const securityButtons = [
+            { text: 'WiFi Scan', command: 'wifi-scan' },
+            { text: 'Nmap', command: 'nmap-scan 192.168.1.1' },
+            { text: 'AI Help', command: 'ai How do I secure my network?' }
+        ];
+
+        securityButtons.forEach(btn => {
+            const button = document.createElement('button');
+            button.className = 'toolbar-btn security-btn';
+            button.textContent = btn.text;
+            button.style.background = '#e74c3c';
+            button.addEventListener('click', () => {
+                this.executeSecurityCommand(btn.command);
+            });
+            toolbar.appendChild(button);
+        });
+    }
+
+    executeSecurityCommand(command) {
+        // Set the command in terminal and execute
+        document.getElementById('terminal-input').value = command;
+        this.executeCommand();
+    }
+
+    autoComplete() {
+        const input = document.getElementById('terminal-input');
+        const value = input.value;
+        
+        const securityCommands = [
+            'wifi-scan', 'wifi-capture', 'wifi-crack', 'wifi-deauth',
+            'nmap-scan', 'vuln-scan', 'network-discovery',
+            'ai', 'exploit-db', 'hash-crack', 'forensics', 'security-audit'
+        ];
+        
+        const matches = securityCommands.filter(cmd => cmd.startsWith(value));
+        if (matches.length === 1) {
+            input.value = matches[0] + ' ';
+        }
     }
 
     async handleLogin() {
@@ -201,13 +274,55 @@ class MukuviGUI {
         const output = document.getElementById('terminal-output');
         const div = document.createElement('div');
         div.className = `terminal-line ${type}`;
+        
+        if (type === 'welcome') {
+            div.style.color = '#00ffff';
+            div.style.whiteSpace = 'pre-line';
+        } else if (type === 'command') {
+            div.style.color = '#ffffff';
+        } else if (type === 'error') {
+            div.style.color = '#ff6b6b';
+        } else {
+            div.style.color = '#00ff00';
+            div.style.whiteSpace = 'pre-line';
+        }
+        
         div.textContent = text;
         output.appendChild(div);
         output.scrollTop = output.scrollHeight;
     }
 
+    showSecurityAlert(alert) {
+        // Create security alert notification
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'security-alert';
+        alertDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 1000;
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+        `;
+        alertDiv.innerHTML = `
+            <strong>🚨 Security Alert</strong><br>
+            ${alert.message}
+        `;
+        
+        document.body.appendChild(alertDiv);
+        
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
+
     getPromptText() {
-        return `${this.currentUser?.username || 'user'}@mukuvi:${this.currentDirectory}$ `;
+        const userColor = this.currentUser?.isAdmin ? '🔴' : '🟢';
+        return `${userColor}${this.currentUser?.username || 'user'}@mukuvi-security:${this.currentDirectory}$ `;
     }
 
     updatePrompt() {
@@ -307,7 +422,7 @@ class MukuviGUI {
             systemInfoDiv.innerHTML = `
                 <div class="info-item">
                     <span class="info-label">OS Name:</span>
-                    <span class="info-value">${sysInfo.osName}</span>
+                    <span class="info-value">${sysInfo.osName} Security Edition</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Version:</span>
@@ -329,6 +444,15 @@ class MukuviGUI {
                     <span class="info-label">Users:</span>
                     <span class="info-value">${sysInfo.userCount}</span>
                 </div>
+                <div class="security-features">
+                    <h4>🔒 Security Features</h4>
+                    <div class="feature-list">
+                        <span class="feature">WiFi Hacking</span>
+                        <span class="feature">Network Scanning</span>
+                        <span class="feature">AI Assistant</span>
+                        <span class="feature">Forensics</span>
+                    </div>
+                </div>
             `;
         } catch (error) {
             console.error('Failed to load system info:', error);
@@ -346,7 +470,9 @@ class MukuviGUI {
         const updateClock = () => {
             const now = new Date();
             document.getElementById('clock-time').textContent = now.toLocaleTimeString();
-            document.getElementById('current-user').textContent = this.currentUser?.username || 'Guest';
+            const userDisplay = this.currentUser?.username || 'Guest';
+            const adminIndicator = this.currentUser?.isAdmin ? ' 🔴' : ' 🟢';
+            document.getElementById('current-user').textContent = userDisplay + adminIndicator;
         };
 
         updateClock();

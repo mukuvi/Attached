@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { MukuviKernel } from '../kernel/kernel.js';
 import { ProcessManager } from '../kernel/process-manager.js';
 import { FileSystem } from '../kernel/filesystem.js';
+import { OsApi } from '../api/os-api.js';
 
 class TestRunner {
   constructor() {
@@ -68,6 +69,26 @@ runner.addTest('File System - Path Resolution', async () => {
   
   const resolved = fs.resolvePath('/home/user/test.txt');
   runner.assert(resolved.includes('test.txt'), 'Path should be resolved correctly');
+});
+
+runner.addTest('OsApi - File System Integration', async () => {
+  const mockKernel = {
+    fileSystem: new FileSystem('/tmp/test-mukuvi')
+  };
+  
+  const osApi = new OsApi(mockKernel);
+  const resolved = osApi.fileSystem.resolvePath('/test/path');
+  runner.assert(resolved.includes('test'), 'OsApi should properly wrap file system methods');
+});
+
+runner.addTest('OsApi - System Info Access', async () => {
+  const mockKernel = {
+    getSystemInfo: () => ({ osName: 'Test OS', version: '1.0.0' })
+  };
+  
+  const osApi = new OsApi(mockKernel);
+  const sysInfo = osApi.getSystemInfo();
+  runner.assert(sysInfo.osName === 'Test OS', 'OsApi should provide access to system info');
 });
 
 runner.addTest('Kernel - Initialization', async () => {

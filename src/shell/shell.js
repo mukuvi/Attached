@@ -1,11 +1,13 @@
 import readline from 'readline';
 import chalk from 'chalk';
 import { CommandProcessor } from './command-processor.js';
+import { OsApi } from '../api/os-api.js';
 
 export class Shell {
   constructor(kernel) {
     this.kernel = kernel;
-    this.commandProcessor = new CommandProcessor(kernel);
+    this.osApi = new OsApi(kernel);
+    this.commandProcessor = new CommandProcessor(this.osApi);
     this.rl = null;
     this.currentUser = null;
     this.isRunning = false;
@@ -28,7 +30,7 @@ export class Shell {
     const username = await this.prompt('Username: ');
     const password = await this.prompt('Password: ', true);
 
-    const authResult = await this.kernel.userManager.authenticateUser(username, password);
+    const authResult = await this.osApi.userManager.authenticateUser(username, password);
     
     if (authResult.success) {
       this.currentUser = authResult.user;
@@ -81,7 +83,7 @@ export class Shell {
     this.isRunning = true;
     
     while (this.isRunning) {
-      const currentDir = this.kernel.fileSystem.getCurrentDirectory();
+      const currentDir = this.osApi.fileSystem.getCurrentDirectory();
       const prompt = chalk.green(`${this.currentUser.username}@mukuvi`) + 
                     chalk.blue(`:${currentDir}`) + 
                     chalk.white('$ ');

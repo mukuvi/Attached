@@ -2,8 +2,8 @@ import chalk from 'chalk';
 import figlet from 'figlet';
 
 export class Commands {
-  constructor(kernel) {
-    this.kernel = kernel;
+  constructor(osApi) {
+    this.osApi = osApi;
     this.commandMap = {
       'help': this.help.bind(this),
       'ls': this.ls.bind(this),
@@ -76,8 +76,8 @@ export class Commands {
 
   async ls(args) {
     try {
-      const path = args[0] || this.kernel.fileSystem.getCurrentDirectory();
-      const entries = await this.kernel.fileSystem.listDirectory(path);
+      const path = args[0] || this.osApi.fileSystem.getCurrentDirectory();
+      const entries = await this.osApi.fileSystem.listDirectory(path);
       
       let output = '';
       for (const entry of entries) {
@@ -93,8 +93,8 @@ export class Commands {
 
   async cd(args) {
     try {
-      const newPath = args[0] || '/home/' + this.kernel.userManager.getCurrentUser().username;
-      this.kernel.fileSystem.changeDirectory(newPath);
+      const newPath = args[0] || '/home/' + this.osApi.userManager.getCurrentUser().username;
+      this.osApi.fileSystem.changeDirectory(newPath);
       return { output: '', exit: false };
     } catch (error) {
       return { output: chalk.red(`cd: ${error.message}`), exit: false };
@@ -102,7 +102,7 @@ export class Commands {
   }
 
   async pwd() {
-    const currentDir = this.kernel.fileSystem.getCurrentDirectory();
+    const currentDir = this.osApi.fileSystem.getCurrentDirectory();
     return { output: currentDir, exit: false };
   }
 
@@ -112,7 +112,7 @@ export class Commands {
     }
 
     try {
-      await this.kernel.fileSystem.createDirectory(args[0]);
+      await this.osApi.fileSystem.createDirectory(args[0]);
       return { output: '', exit: false };
     } catch (error) {
       return { output: chalk.red(`mkdir: ${error.message}`), exit: false };
@@ -125,7 +125,7 @@ export class Commands {
     }
 
     try {
-      await this.kernel.fileSystem.writeFile(args[0], '');
+      await this.osApi.fileSystem.writeFile(args[0], '');
       return { output: '', exit: false };
     } catch (error) {
       return { output: chalk.red(`touch: ${error.message}`), exit: false };
@@ -138,7 +138,7 @@ export class Commands {
     }
 
     try {
-      const content = await this.kernel.fileSystem.readFile(args[0]);
+      const content = await this.osApi.fileSystem.readFile(args[0]);
       return { output: content, exit: false };
     } catch (error) {
       return { output: chalk.red(`cat: ${error.message}`), exit: false };
@@ -155,7 +155,7 @@ export class Commands {
     }
 
     try {
-      await this.kernel.fileSystem.deleteFile(args[0]);
+      await this.osApi.fileSystem.deleteFile(args[0]);
       return { output: '', exit: false };
     } catch (error) {
       return { output: chalk.red(`rm: ${error.message}`), exit: false };
@@ -163,7 +163,7 @@ export class Commands {
   }
 
   async ps() {
-    const processes = this.kernel.processManager.getAllProcesses();
+    const processes = this.osApi.processManager.getAllProcesses();
     let output = chalk.cyan('PID\tNAME\t\tSTATUS\t\tSTART TIME\n');
     output += chalk.cyan('---\t----\t\t------\t\t----------\n');
     
@@ -179,12 +179,12 @@ export class Commands {
   }
 
   async uname() {
-    const sysInfo = this.kernel.getSystemInfo();
+    const sysInfo = this.osApi.getSystemInfo();
     return { output: `${sysInfo.osName} ${sysInfo.version}`, exit: false };
   }
 
   async uptime() {
-    const sysInfo = this.kernel.getSystemInfo();
+    const sysInfo = this.osApi.getSystemInfo();
     const uptimeMs = sysInfo.uptime;
     const uptimeSeconds = Math.floor(uptimeMs / 1000);
     const hours = Math.floor(uptimeSeconds / 3600);
@@ -207,12 +207,12 @@ export class Commands {
   }
 
   async shutdown() {
-    await this.kernel.shutdown();
+    await this.osApi.shutdown();
     return { output: '', exit: true };
   }
 
   async users() {
-    const users = await this.kernel.userManager.getAllUsers();
+    const users = await this.osApi.userManager.getAllUsers();
     let output = chalk.cyan('USERNAME\tFULL NAME\t\tCREATED\n');
     output += chalk.cyan('--------\t---------\t\t-------\n');
     
@@ -224,7 +224,7 @@ export class Commands {
   }
 
   async sysinfo() {
-    const sysInfo = this.kernel.getSystemInfo();
+    const sysInfo = this.osApi.getSystemInfo();
     let output = chalk.cyan('=== Mukuvi OS System Information ===\n\n');
     output += `OS Name: ${sysInfo.osName}\n`;
     output += `Version: ${sysInfo.version}\n`;

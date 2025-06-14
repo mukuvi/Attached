@@ -2,9 +2,9 @@ import chalk from 'chalk';
 import { Commands } from './commands.js';
 
 export class CommandProcessor {
-  constructor(kernel) {
-    this.kernel = kernel;
-    this.commands = new Commands(kernel);
+  constructor(osApi) {
+    this.osApi = osApi;
+    this.commands = new Commands(osApi);
   }
 
   async execute(commandLine, user) {

@@ -1,0 +1,20 @@
+{
+  "osName": "Mukuvi OS",
+  "version": "1.0.0",
+  "kernel": "mukuvi-kernel",
+  "shell": "mukush",
+  "adminUser": "mukuvi",
+  "bootTime": "2025-06-14T12:01:14.993Z",
+  "timezone": "UTC",
+  "locale": "en_US",
+  "maxUsers": 100,
+  "maxProcesses": 1000,
+  "fileSystemType": "mukufs",
+  "security": {
+    "passwordPolicy": {
+      "minLength": 4,
+      "requireSpecialChars": false
+    },
+    "sessionTimeout": 3600000
+  }
+}

@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+// Mukuvi OS Boot Script
+import { MukuviKernel } from '../kernel/kernel.js';
+
+const kernel = new MukuviKernel();
+kernel.boot();

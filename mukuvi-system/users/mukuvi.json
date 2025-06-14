@@ -1,0 +1,14 @@
+{
+  "username": "mukuvi",
+  "password": "bXVrdXZp",
+  "fullName": "mukuvi",
+  "homeDir": "/home/mukuvi",
+  "shell": "/system/bin/mukush",
+  "permissions": [
+    "read",
+    "write",
+    "execute"
+  ],
+  "createdAt": "2025-06-14T12:01:14.989Z",
+  "isAdmin": true
+}

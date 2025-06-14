@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import { MukuviKernel } from '../kernel/kernel.js';
 import { OsApi } from '../api/os-api.js';
+import { CommandProcessor } from '../shell/command-processor.js';
 import chalk from 'chalk';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,6 +26,7 @@ class GuiServer {
     });
     this.kernel = null;
     this.osApi = null;
+    this.commandProcessor = null;
     this.sessions = new Map();
     this.port = 3000;
   }
@@ -36,6 +38,7 @@ class GuiServer {
     await this.kernel.loadServices();
     
     this.osApi = new OsApi(this.kernel);
+    this.commandProcessor = new CommandProcessor(this.osApi);
     
     // Setup middleware
     this.app.use(cors());
@@ -92,7 +95,15 @@ class GuiServer {
         }
 
         try {
-          const result = await this.executeCommand(command, session);
+          // Use the full command processor instead of simplified execution
+          const result = await this.commandProcessor.execute(command, session.user);
+          
+          // Handle directory changes
+          if (command.trim().startsWith('cd ')) {
+            session.currentDir = this.osApi.fileSystem.getCurrentDirectory();
+            result.currentDir = session.currentDir;
+          }
+          
           socket.emit('command-result', result);
         } catch (error) {
           socket.emit('command-result', { error: error.message });
@@ -121,80 +132,6 @@ class GuiServer {
         console.log(chalk.gray('GUI client disconnected'));
       });
     });
-  }
-
-  async executeCommand(commandLine, session) {
-    const parts = commandLine.trim().split(/\s+/);
-    const command = parts[0];
-    const args = parts.slice(1);
-
-    switch (command) {
-      case 'ls':
-        const path = args[0] || session.currentDir;
-        const entries = await this.osApi.fileSystem.listDirectory(path);
-        return { output: entries.map(e => e.name).join('\n') };
-
-      case 'cd':
-        const newPath = args[0] || `/home/${session.user.username}`;
-        try {
-          this.osApi.fileSystem.changeDirectory(newPath);
-          session.currentDir = this.osApi.fileSystem.getCurrentDirectory();
-          return { output: '', currentDir: session.currentDir };
-        } catch (error) {
-          return { error: error.message };
-        }
-
-      case 'pwd':
-        return { output: session.currentDir };
-
-      case 'mkdir':
-        if (!args[0]) return { error: 'mkdir: missing directory name' };
-        await this.osApi.fileSystem.createDirectory(args[0]);
-        return { output: `Directory '${args[0]}' created` };
-
-      case 'touch':
-        if (!args[0]) return { error: 'touch: missing file name' };
-        await this.osApi.fileSystem.writeFile(args[0], '');
-        return { output: `File '${args[0]}' created` };
-
-      case 'cat':
-        if (!args[0]) return { error: 'cat: missing file name' };
-        const content = await this.osApi.fileSystem.readFile(args[0]);
-        return { output: content };
-
-      case 'rm':
-        if (!args[0]) return { error: 'rm: missing file name' };
-        await this.osApi.fileSystem.deleteFile(args[0]);
-        return { output: `File '${args[0]}' removed` };
-
-      case 'ps':
-        const processes = this.osApi.processManager.getAllProcesses();
-        const processOutput = processes.map(p => 
-          `${p.pid}\t${p.name}\t${p.status}\t${p.startTime.toLocaleTimeString()}`
-        ).join('\n');
-        return { output: `PID\tNAME\tSTATUS\tSTART TIME\n${processOutput}` };
-
-      case 'whoami':
-        return { output: session.user.username };
-
-      case 'uname':
-        const sysInfo = this.osApi.getSystemInfo();
-        return { output: `${sysInfo.osName} ${sysInfo.version}` };
-
-      case 'echo':
-        return { output: args.join(' ') };
-
-      case 'date':
-        return { output: new Date().toString() };
-
-      case 'help':
-        return { 
-          output: 'Available commands: ls, cd, pwd, mkdir, touch, cat, rm, ps, whoami, uname, echo, date, help' 
-        };
-
-      default:
-        return { error: `Command not found: ${command}` };
-    }
   }
 
   async start() {

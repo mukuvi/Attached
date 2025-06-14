@@ -1,4 +1,4 @@
-class MukuviGUI {
+class MukuviOSGUI {
     constructor() {
         this.socket = null;
         this.sessionId = null;
@@ -9,57 +9,98 @@ class MukuviGUI {
         this.runningApps = new Set();
         this.packages = new Map();
         this.services = new Map();
+        this.isInitialized = false;
         
         this.init();
     }
 
     async init() {
-        // Show boot screen
-        await this.showBootSequence();
-        
-        // Initialize socket connection
-        this.socket = io();
-        this.setupSocketListeners();
-        
-        // Show login screen
-        this.showLoginScreen();
-        
-        // Setup event listeners
-        this.setupEventListeners();
-        
-        // Start clock
-        this.startClock();
-        
-        // Initialize data
-        this.initializePackages();
-        this.initializeServices();
+        try {
+            // Show enhanced boot sequence
+            await this.showEnhancedBootSequence();
+            
+            // Initialize socket connection
+            this.initializeSocket();
+            
+            // Show login screen
+            this.showLoginScreen();
+            
+            // Setup event listeners
+            this.setupEventListeners();
+            
+            // Start system clock
+            this.startSystemClock();
+            
+            // Initialize data
+            this.initializeSystemData();
+            
+            this.isInitialized = true;
+        } catch (error) {
+            console.error('Failed to initialize mukuviOS:', error);
+            this.showErrorScreen(error);
+        }
     }
 
-    async showBootSequence() {
+    async showEnhancedBootSequence() {
         const bootScreen = document.getElementById('boot-screen');
         const loadingText = document.querySelector('.loading-text');
         
         const bootMessages = [
             'Initializing mukuviOS Security Kernel...',
-            'Loading WiFi hacking modules...',
-            'Starting AI assistant ARIA...',
-            'Initializing network scanners...',
-            'Loading exploit database...',
-            'Starting forensics tools...',
-            'Loading Metasploit framework...',
-            'Initializing Burp Suite...',
+            'Loading advanced WiFi hacking modules...',
+            'Starting ARIA AI security assistant...',
+            'Initializing network vulnerability scanners...',
+            'Loading Metasploit exploitation framework...',
+            'Starting web application security tools...',
+            'Loading password cracking utilities...',
+            'Initializing digital forensics toolkit...',
             'Starting development environment...',
-            'Loading package manager...',
-            'Security systems ready!'
+            'Loading package management system...',
+            'Initializing service orchestration...',
+            'Security systems fully operational!'
         ];
 
         for (let i = 0; i < bootMessages.length; i++) {
             loadingText.textContent = bootMessages[i];
-            await this.sleep(500);
+            await this.sleep(600);
+            
+            // Add some visual effects
+            if (i === bootMessages.length - 1) {
+                loadingText.style.color = '#00ff00';
+                loadingText.style.textShadow = '0 0 20px #00ff00';
+            }
         }
 
-        await this.sleep(1000);
+        await this.sleep(1500);
         bootScreen.classList.add('hidden');
+    }
+
+    initializeSocket() {
+        this.socket = io();
+        this.setupSocketListeners();
+    }
+
+    setupSocketListeners() {
+        this.socket.on('connect', () => {
+            console.log('Connected to mukuviOS server');
+        });
+
+        this.socket.on('command-result', (result) => {
+            this.handleCommandResult(result);
+        });
+
+        this.socket.on('directory-listing', (data) => {
+            this.updateFileManager(data);
+        });
+
+        this.socket.on('security-alert', (alert) => {
+            this.showSecurityAlert(alert);
+        });
+
+        this.socket.on('disconnect', () => {
+            console.log('Disconnected from mukuviOS server');
+            this.showNotification('Connection lost - attempting to reconnect...', 'warning');
+        });
     }
 
     showLoginScreen() {
@@ -76,63 +117,63 @@ class MukuviGUI {
         this.showWelcomeMessage();
         
         // Focus terminal input
-        const terminalInput = document.getElementById('terminal-input');
-        if (terminalInput) {
-            terminalInput.focus();
-        }
+        setTimeout(() => {
+            const terminalInput = document.getElementById('terminal-input');
+            if (terminalInput) {
+                terminalInput.focus();
+            }
+        }, 500);
     }
 
     showWelcomeMessage() {
         const welcomeMsg = `🔒 Welcome to mukuviOS - Complete Hacking & Programming Environment!
 
-🛡️ Security Tools Available:
-• WiFi Security Testing (aircrack-ng, wifi-crack, handshake capture)
+🛡️ Advanced Security Arsenal:
+• WiFi Security Testing (aircrack-ng, handshake capture, WPA/WPA2 cracking)
 • Web Application Security (sqlmap, burpsuite, nikto, dirb, gobuster)
-• Network Security (nmap-scan, vuln-scan, network-discovery)
-• Penetration Testing (metasploit, msfconsole, hydra)
-• Password Cracking (john, hashcat, hash-crack)
-• Network Analysis (wireshark, tcpdump, netstat)
-• Social Engineering Toolkit
-• AI Security Assistant (ARIA)
+• Network Penetration Testing (nmap-scan, vuln-scan, network-discovery)
+• Exploitation Framework (metasploit, msfconsole, payload generation)
+• Password Cracking (john, hashcat, hash-crack, wordlist attacks)
+• Network Analysis (wireshark, tcpdump, packet inspection)
+• Social Engineering Toolkit (phishing, vishing, pretexting)
+• Digital Forensics (disk imaging, file recovery, timeline analysis)
+• AI Security Assistant (ARIA - Advanced Reasoning Intelligence Assistant)
 
-💻 Development Environment:
-• Programming Languages (Python, Node.js, C/C++, JavaScript)
-• Package Management (apt, npm, pip)
-• Development Tools (git, docker, vim, nano, VS Code)
+💻 Complete Development Environment:
+• Programming Languages (Python, Node.js, C/C++, JavaScript, Go, Rust)
+• Package Management (apt, npm, pip, cargo, go mod)
+• Development Tools (git, docker, vim, nano, VS Code, IntelliJ)
 • Project Management (create-project, dev-server, build, test, deploy)
-• Database Support (MySQL, PostgreSQL, Redis)
+• Database Support (MySQL, PostgreSQL, Redis, MongoDB, SQLite)
+• Web Frameworks (React, Vue, Angular, Express, Django, Flask)
+• DevOps Tools (CI/CD, containerization, orchestration)
 
-⚙️ System Administration:
-• Service Management (systemctl, service)
-• Process Monitoring (ps, top, htop, free, df, du, lsof)
-• User Management (sudo, su, chmod, chown)
-• Network Tools (ping, traceroute, dig, nslookup, ss)
-• Firewall (iptables, ufw)
-• File Operations (find, grep, tar, zip, wget, curl)
+⚙️ System Administration Suite:
+• Service Management (systemctl, service control, daemon management)
+• Process Monitoring (ps, top, htop, free, df, du, lsof, iotop)
+• User Management (sudo, su, chmod, chown, user creation)
+• Network Tools (ping, traceroute, dig, nslookup, ss, netstat)
+• Firewall Management (iptables, ufw, security policies)
+• File Operations (find, grep, tar, zip, wget, curl, rsync)
+• System Monitoring (performance metrics, log analysis)
+• Cron Job Scheduling (automated tasks, system maintenance)
 
-🚀 Quick Start:
+🚀 Quick Start Commands:
 • Use desktop icons or start menu to launch applications
-• Type 'help' for full command list
-• Use 'apt install <package>' to install new tools
-• Use 'ai <question>' for security assistance
+• Type 'help' for comprehensive command reference
+• Use 'apt install <package>' to install new security tools
+• Use 'ai <question>' for intelligent security assistance
+• Use 'create-project <name> <type>' to start development
+• Use 'systemctl status' to monitor system services
 
-Remember: Use tools ethically and legally! 🛡️`;
+🔐 Ethical Usage Reminder:
+All security tools are for authorized testing and educational purposes only.
+Always obtain proper permission before testing on any systems.
+Follow responsible disclosure practices for any vulnerabilities found.
+
+Ready to explore the complete hacking and programming environment! 🛡️💻`;
 
         this.addToTerminal(welcomeMsg, 'welcome');
-    }
-
-    setupSocketListeners() {
-        this.socket.on('command-result', (result) => {
-            this.handleCommandResult(result);
-        });
-
-        this.socket.on('directory-listing', (data) => {
-            this.updateFileManager(data);
-        });
-
-        this.socket.on('security-alert', (alert) => {
-            this.showSecurityAlert(alert);
-        });
     }
 
     setupEventListeners() {
@@ -142,30 +183,24 @@ Remember: Use tools ethically and legally! 🛡️`;
             this.handleLogin();
         });
 
-        // Terminal input
+        // Terminal input with enhanced features
         const terminalInput = document.getElementById('terminal-input');
         if (terminalInput) {
             terminalInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    this.executeCommand();
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    this.navigateHistory(-1);
-                } else if (e.key === 'ArrowDown') {
-                    e.preventDefault();
-                    this.navigateHistory(1);
-                } else if (e.key === 'Tab') {
-                    e.preventDefault();
-                    this.autoComplete();
-                }
+                this.handleTerminalKeydown(e);
             });
         }
 
-        // Desktop icons
+        // Desktop icons with double-click and context menu
         document.querySelectorAll('.desktop-icon').forEach(icon => {
             icon.addEventListener('dblclick', () => {
                 const app = icon.getAttribute('data-app');
                 this.launchApplication(app);
+            });
+            
+            icon.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                this.showContextMenu(e, icon);
             });
         });
 
@@ -203,12 +238,73 @@ Remember: Use tools ethically and legally! 🛡️`;
         // Application-specific event listeners
         this.setupApplicationEventListeners();
 
-        // Click outside to close start menu
+        // Global keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            this.handleGlobalKeyboard(e);
+        });
+
+        // Click outside to close menus
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#start-menu-btn') && !e.target.closest('#start-menu')) {
                 this.hideStartMenu();
             }
         });
+    }
+
+    handleTerminalKeydown(e) {
+        switch (e.key) {
+            case 'Enter':
+                this.executeCommand();
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                this.navigateHistory(-1);
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                this.navigateHistory(1);
+                break;
+            case 'Tab':
+                e.preventDefault();
+                this.autoComplete();
+                break;
+            case 'l':
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    this.clearTerminal();
+                }
+                break;
+            case 'c':
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    this.interruptCommand();
+                }
+                break;
+        }
+    }
+
+    handleGlobalKeyboard(e) {
+        // Global shortcuts
+        if (e.ctrlKey && e.altKey) {
+            switch (e.key) {
+                case 't':
+                    e.preventDefault();
+                    this.launchApplication('terminal');
+                    break;
+                case 'f':
+                    e.preventDefault();
+                    this.launchApplication('file-manager');
+                    break;
+                case 'w':
+                    e.preventDefault();
+                    this.launchApplication('wifi-scanner');
+                    break;
+                case 'm':
+                    e.preventDefault();
+                    this.launchApplication('metasploit');
+                    break;
+            }
+        }
     }
 
     setupApplicationEventListeners() {
@@ -223,7 +319,7 @@ Remember: Use tools ethically and legally! 🛡️`;
         const wifiCaptureBtn = document.getElementById('wifi-capture-btn');
         if (wifiCaptureBtn) {
             wifiCaptureBtn.addEventListener('click', () => {
-                const bssid = prompt('Enter BSSID to capture:');
+                const bssid = prompt('Enter BSSID to capture handshake:');
                 if (bssid) {
                     this.executeSecurityCommand(`wifi-capture ${bssid}`);
                 }
@@ -244,7 +340,7 @@ Remember: Use tools ethically and legally! 🛡️`;
         document.querySelectorAll('.exploit-card').forEach(card => {
             card.addEventListener('click', () => {
                 const exploit = card.getAttribute('data-exploit');
-                const target = prompt('Enter target IP:');
+                const target = prompt('Enter target IP address:');
                 if (target) {
                     this.executeSecurityCommand(`metasploit ${exploit} ${target}`);
                 }
@@ -306,13 +402,20 @@ Remember: Use tools ethically and legally! 🛡️`;
                 this.currentUser = result.user;
                 this.currentDirectory = `/home/${result.user.username}`;
                 this.showDesktop();
+                this.showNotification(`Welcome to mukuviOS, ${result.user.fullName}!`, 'success');
             } else {
                 errorDiv.textContent = result.error;
                 errorDiv.classList.remove('hidden');
+                setTimeout(() => {
+                    errorDiv.classList.add('hidden');
+                }, 3000);
             }
         } catch (error) {
-            errorDiv.textContent = 'Connection error';
+            errorDiv.textContent = 'Connection error - please try again';
             errorDiv.classList.remove('hidden');
+            setTimeout(() => {
+                errorDiv.classList.add('hidden');
+            }, 3000);
         }
     }
 
@@ -329,12 +432,15 @@ Remember: Use tools ethically and legally! 🛡️`;
             if (appName === 'terminal') {
                 const terminalInput = document.getElementById('terminal-input');
                 if (terminalInput) {
-                    setTimeout(() => terminalInput.focus(), 100);
+                    setTimeout(() => terminalInput.focus(), 200);
                 }
             }
             
             // Load application-specific data
             this.loadApplicationData(appName);
+            
+            // Show notification
+            this.showNotification(`Launched ${appName.replace('-', ' ')}`, 'info');
         } else {
             // Handle applications that don't have dedicated windows
             this.handleSpecialApplications(appName);
@@ -342,133 +448,30 @@ Remember: Use tools ethically and legally! 🛡️`;
     }
 
     handleSpecialApplications(appName) {
-        switch (appName) {
-            case 'python':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('python3');
-                break;
-            case 'nodejs':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('node');
-                break;
-            case 'git':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('git status');
-                break;
-            case 'docker':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('docker ps');
-                break;
-            case 'vscode':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('code .');
-                break;
-            case 'nmap':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('nmap-scan 192.168.1.1');
-                break;
-            case 'burpsuite':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('burpsuite http://example.com');
-                break;
-            case 'wireshark':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('wireshark eth0');
-                break;
-            case 'john':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('john --help');
-                break;
-            case 'hashcat':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('hashcat --help');
-                break;
-            case 'social-engineer':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('social-engineer phishing example@target.com');
-                break;
-            case 'firewall':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('ufw status');
-                break;
-            case 'file-manager':
-                this.launchApplication('terminal');
-                this.executeSecurityCommand('ls -la');
-                break;
-            default:
-                this.showNotification(`Application ${appName} not implemented yet`, 'warning');
+        const commands = {
+            'python': 'python3',
+            'nodejs': 'node',
+            'git': 'git status',
+            'docker': 'docker ps',
+            'vscode': 'code .',
+            'nmap': 'nmap-scan 192.168.1.1',
+            'burpsuite': 'burpsuite http://example.com',
+            'wireshark': 'wireshark eth0',
+            'john': 'john --help',
+            'hashcat': 'hashcat --help',
+            'social-engineer': 'social-engineer phishing example@target.com',
+            'firewall': 'ufw status',
+            'file-manager': 'ls -la'
+        };
+
+        if (commands[appName]) {
+            this.launchApplication('terminal');
+            setTimeout(() => {
+                this.executeSecurityCommand(commands[appName]);
+            }, 500);
+        } else {
+            this.showNotification(`Application ${appName} not implemented yet`, 'warning');
         }
-    }
-
-    loadApplicationData(appName) {
-        switch (appName) {
-            case 'package-manager':
-                this.showPackageCategory('security');
-                break;
-            case 'service-manager':
-                this.refreshServices();
-                break;
-            case 'system-monitor':
-                this.loadSystemMonitorData();
-                break;
-        }
-    }
-
-    handleWindowControl(window, action) {
-        const appName = window.id.replace('-window', '');
-        
-        switch (action) {
-            case 'close':
-                window.classList.add('hidden');
-                this.runningApps.delete(appName);
-                this.updateRunningApps();
-                break;
-            case 'minimize':
-                window.style.transform = window.style.transform === 'scale(0.1)' ? 'scale(1)' : 'scale(0.1)';
-                break;
-            case 'maximize':
-                if (window.style.width === '100%') {
-                    window.style.width = '80%';
-                    window.style.height = '70%';
-                    window.style.left = '10%';
-                    window.style.top = '10%';
-                } else {
-                    window.style.width = '100%';
-                    window.style.height = '100%';
-                    window.style.left = '0';
-                    window.style.top = '0';
-                }
-                break;
-        }
-    }
-
-    toggleStartMenu() {
-        const startMenu = document.getElementById('start-menu');
-        startMenu.classList.toggle('hidden');
-    }
-
-    hideStartMenu() {
-        const startMenu = document.getElementById('start-menu');
-        startMenu.classList.add('hidden');
-    }
-
-    updateRunningApps() {
-        const runningAppsContainer = document.getElementById('running-apps');
-        runningAppsContainer.innerHTML = '';
-        
-        this.runningApps.forEach(appName => {
-            const indicator = document.createElement('div');
-            indicator.className = 'running-app-indicator';
-            indicator.style.cssText = `
-                width: 8px;
-                height: 8px;
-                background: #00ff00;
-                border-radius: 50%;
-                margin: 0 2px;
-                box-shadow: 0 0 5px #00ff00;
-            `;
-            runningAppsContainer.appendChild(indicator);
-        });
     }
 
     executeCommand() {
@@ -530,21 +533,33 @@ Remember: Use tools ethically and legally! 🛡️`;
         const div = document.createElement('div');
         div.className = `terminal-line ${type}`;
         
-        if (type === 'welcome') {
-            div.style.color = '#00ffff';
-            div.style.whiteSpace = 'pre-line';
-        } else if (type === 'command') {
-            div.style.color = '#ffffff';
-        } else if (type === 'error') {
-            div.style.color = '#ff6b6b';
-        } else {
-            div.style.color = '#00ff00';
+        const colors = {
+            'welcome': '#00ffff',
+            'command': '#ffffff',
+            'error': '#ff6b6b',
+            'output': '#00ff00'
+        };
+        
+        div.style.color = colors[type] || '#00ff00';
+        if (type === 'welcome' || type === 'output') {
             div.style.whiteSpace = 'pre-line';
         }
         
         div.textContent = text;
         output.appendChild(div);
         output.scrollTop = output.scrollHeight;
+    }
+
+    clearTerminal() {
+        const output = document.getElementById('terminal-output');
+        if (output) {
+            output.innerHTML = '';
+        }
+    }
+
+    interruptCommand() {
+        this.addToTerminal('^C', 'error');
+        this.addToTerminal('Command interrupted', 'error');
     }
 
     getPromptText() {
@@ -601,13 +616,69 @@ Remember: Use tools ethically and legally! 🛡️`;
             'ps', 'netstat', 'ss', 'ping', 'traceroute', 'dig', 'nslookup',
             'iptables', 'ufw', 'sudo', 'su', 'chmod', 'chown',
             // AI and utilities
-            'ai', 'exploit-db', 'forensics', 'security-audit'
+            'ai', 'exploit-db', 'forensics', 'security-audit', 'help', 'clear'
         ];
         
         const matches = allCommands.filter(cmd => cmd.startsWith(value));
         if (matches.length === 1) {
             input.value = matches[0] + ' ';
+        } else if (matches.length > 1) {
+            this.addToTerminal(`Available commands: ${matches.join(', ')}`, 'info');
         }
+    }
+
+    handleWindowControl(window, action) {
+        const appName = window.id.replace('-window', '');
+        
+        switch (action) {
+            case 'close':
+                window.classList.add('hidden');
+                this.runningApps.delete(appName);
+                this.updateRunningApps();
+                break;
+            case 'minimize':
+                window.style.transform = window.style.transform === 'scale(0.1)' ? 'scale(1)' : 'scale(0.1)';
+                break;
+            case 'maximize':
+                if (window.style.width === '100%') {
+                    window.style.width = '84%';
+                    window.style.height = '75%';
+                    window.style.left = '8%';
+                    window.style.top = '8%';
+                } else {
+                    window.style.width = '100%';
+                    window.style.height = '100%';
+                    window.style.left = '0';
+                    window.style.top = '0';
+                }
+                break;
+        }
+    }
+
+    toggleStartMenu() {
+        const startMenu = document.getElementById('start-menu');
+        startMenu.classList.toggle('hidden');
+    }
+
+    hideStartMenu() {
+        const startMenu = document.getElementById('start-menu');
+        startMenu.classList.add('hidden');
+    }
+
+    updateRunningApps() {
+        const runningAppsContainer = document.getElementById('running-apps');
+        runningAppsContainer.innerHTML = '';
+        
+        this.runningApps.forEach(appName => {
+            const indicator = document.createElement('div');
+            indicator.className = 'running-app-indicator';
+            runningAppsContainer.appendChild(indicator);
+        });
+    }
+
+    initializeSystemData() {
+        this.initializePackages();
+        this.initializeServices();
     }
 
     initializePackages() {
@@ -672,7 +743,6 @@ Remember: Use tools ethically and legally! 🛡️`;
         
         let packages = [];
         if (category === 'installed') {
-            // Show all installed packages
             for (const [cat, pkgs] of this.packages) {
                 packages.push(...pkgs.filter(pkg => pkg.installed));
             }
@@ -692,7 +762,18 @@ Remember: Use tools ethically and legally! 🛡️`;
                 border-radius: 8px;
                 margin-bottom: 10px;
                 border: 1px solid rgba(0, 255, 255, 0.2);
+                transition: all 0.3s ease;
             `;
+
+            packageItem.addEventListener('mouseenter', () => {
+                packageItem.style.background = 'rgba(0, 255, 255, 0.1)';
+                packageItem.style.borderColor = 'rgba(0, 255, 255, 0.5)';
+            });
+
+            packageItem.addEventListener('mouseleave', () => {
+                packageItem.style.background = 'rgba(0, 0, 0, 0.3)';
+                packageItem.style.borderColor = 'rgba(0, 255, 255, 0.2)';
+            });
 
             const packageInfo = document.createElement('div');
             packageInfo.innerHTML = `
@@ -708,8 +789,7 @@ Remember: Use tools ethically and legally! 🛡️`;
                 const removeBtn = document.createElement('button');
                 removeBtn.textContent = 'Remove';
                 removeBtn.className = 'btn danger';
-                removeBtn.style.padding = '5px 15px';
-                removeBtn.style.fontSize = '12px';
+                removeBtn.style.cssText = 'padding: 5px 15px; font-size: 12px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;';
                 removeBtn.addEventListener('click', () => {
                     this.executeSecurityCommand(`apt remove ${pkg.name}`);
                 });
@@ -718,8 +798,7 @@ Remember: Use tools ethically and legally! 🛡️`;
                 const installBtn = document.createElement('button');
                 installBtn.textContent = 'Install';
                 installBtn.className = 'btn primary';
-                installBtn.style.padding = '5px 15px';
-                installBtn.style.fontSize = '12px';
+                installBtn.style.cssText = 'padding: 5px 15px; font-size: 12px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;';
                 installBtn.addEventListener('click', () => {
                     this.executeSecurityCommand(`apt install ${pkg.name}`);
                 });
@@ -741,25 +820,45 @@ Remember: Use tools ethically and legally! 🛡️`;
         for (const [name, service] of this.services) {
             const serviceItem = document.createElement('div');
             serviceItem.className = 'service-item';
+            serviceItem.style.cssText = `
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 15px;
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: 8px;
+                margin-bottom: 10px;
+                border: 1px solid rgba(0, 255, 255, 0.2);
+                transition: all 0.3s ease;
+            `;
 
             const serviceInfo = document.createElement('div');
-            serviceInfo.className = 'service-info';
             serviceInfo.innerHTML = `
-                <div class="service-name">${service.name}</div>
-                <div class="service-description">${service.description}</div>
+                <div style="color: #00ffff; font-weight: 600; margin-bottom: 5px;">${service.name}</div>
+                <div style="color: #ccc; font-size: 12px;">${service.description}</div>
             `;
 
             const serviceStatus = document.createElement('div');
-            serviceStatus.className = `service-status ${service.status}`;
+            serviceStatus.style.cssText = `
+                padding: 5px 15px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
+                margin-right: 15px;
+                ${service.status === 'running' ? 
+                    'background: rgba(39, 174, 96, 0.2); color: #27ae60; border: 1px solid #27ae60;' :
+                    'background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c;'
+                }
+            `;
             serviceStatus.textContent = service.status.toUpperCase();
 
             const serviceControls = document.createElement('div');
-            serviceControls.className = 'service-controls';
+            serviceControls.style.cssText = 'display: flex; gap: 10px;';
 
             if (service.status === 'running') {
                 const stopBtn = document.createElement('button');
                 stopBtn.textContent = 'Stop';
-                stopBtn.className = 'btn danger';
+                stopBtn.style.cssText = 'padding: 5px 15px; font-size: 12px; background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer;';
                 stopBtn.addEventListener('click', () => {
                     this.executeSecurityCommand(`systemctl stop ${service.name}`);
                     service.status = 'stopped';
@@ -769,7 +868,7 @@ Remember: Use tools ethically and legally! 🛡️`;
 
                 const restartBtn = document.createElement('button');
                 restartBtn.textContent = 'Restart';
-                restartBtn.className = 'btn secondary';
+                restartBtn.style.cssText = 'padding: 5px 15px; font-size: 12px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer;';
                 restartBtn.addEventListener('click', () => {
                     this.executeSecurityCommand(`systemctl restart ${service.name}`);
                 });
@@ -777,7 +876,7 @@ Remember: Use tools ethically and legally! 🛡️`;
             } else {
                 const startBtn = document.createElement('button');
                 startBtn.textContent = 'Start';
-                startBtn.className = 'btn success';
+                startBtn.style.cssText = 'padding: 5px 15px; font-size: 12px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer;';
                 startBtn.addEventListener('click', () => {
                     this.executeSecurityCommand(`systemctl start ${service.name}`);
                     service.status = 'running';
@@ -842,6 +941,20 @@ Remember: Use tools ethically and legally! 🛡️`;
         }
     }
 
+    loadApplicationData(appName) {
+        switch (appName) {
+            case 'package-manager':
+                this.showPackageCategory('security');
+                break;
+            case 'service-manager':
+                this.refreshServices();
+                break;
+            case 'system-monitor':
+                this.loadSystemMonitorData();
+                break;
+        }
+    }
+
     loadSystemMonitorData() {
         this.loadSystemInfo();
         
@@ -880,31 +993,122 @@ Remember: Use tools ethically and legally! 🛡️`;
             position: fixed;
             top: 20px;
             right: 20px;
-            background: ${type === 'error' ? 'rgba(231, 76, 60, 0.9)' : 
-                        type === 'warning' ? 'rgba(243, 156, 18, 0.9)' : 
-                        'rgba(52, 152, 219, 0.9)'};
+            background: ${type === 'error' ? 'rgba(231, 76, 60, 0.95)' : 
+                        type === 'warning' ? 'rgba(243, 156, 18, 0.95)' : 
+                        type === 'success' ? 'rgba(39, 174, 96, 0.95)' :
+                        'rgba(52, 152, 219, 0.95)'};
             color: white;
             padding: 15px 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             z-index: 1000;
-            max-width: 300px;
+            max-width: 350px;
             backdrop-filter: blur(10px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+            animation: slideInRight 0.3s ease-out;
         `;
-        notification.textContent = message;
+        
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 18px;">
+                    ${type === 'error' ? '❌' : 
+                      type === 'warning' ? '⚠️' : 
+                      type === 'success' ? '✅' : 'ℹ️'}
+                </span>
+                <span>${message}</span>
+            </div>
+        `;
         
         document.body.appendChild(notification);
         
         setTimeout(() => {
-            notification.remove();
-        }, 5000);
+            notification.style.animation = 'slideOutRight 0.3s ease-in forwards';
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 4000);
     }
 
     showSecurityAlert(alert) {
         this.showNotification(`🚨 Security Alert: ${alert.message}`, 'error');
     }
 
-    startClock() {
+    showContextMenu(event, element) {
+        // Context menu implementation
+        const contextMenu = document.createElement('div');
+        contextMenu.style.cssText = `
+            position: fixed;
+            top: ${event.clientY}px;
+            left: ${event.clientX}px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        `;
+        
+        const menuItems = ['Open', 'Properties', 'Create Shortcut'];
+        menuItems.forEach(item => {
+            const menuItem = document.createElement('div');
+            menuItem.textContent = item;
+            menuItem.style.cssText = `
+                padding: 8px 16px;
+                color: white;
+                cursor: pointer;
+                transition: background 0.2s;
+            `;
+            menuItem.addEventListener('mouseenter', () => {
+                menuItem.style.background = 'rgba(0, 255, 255, 0.2)';
+            });
+            menuItem.addEventListener('mouseleave', () => {
+                menuItem.style.background = 'transparent';
+            });
+            contextMenu.appendChild(menuItem);
+        });
+        
+        document.body.appendChild(contextMenu);
+        
+        setTimeout(() => {
+            document.addEventListener('click', () => {
+                contextMenu.remove();
+            }, { once: true });
+        }, 100);
+    }
+
+    showErrorScreen(error) {
+        document.body.innerHTML = `
+            <div style="
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+                color: #ff6b6b;
+                font-family: 'JetBrains Mono', monospace;
+                text-align: center;
+            ">
+                <div>
+                    <h1 style="font-size: 48px; margin-bottom: 20px;">⚠️ System Error</h1>
+                    <p style="font-size: 18px; margin-bottom: 20px;">mukuviOS failed to initialize</p>
+                    <p style="font-size: 14px; color: #ccc;">${error.message}</p>
+                    <button onclick="location.reload()" style="
+                        margin-top: 30px;
+                        padding: 15px 30px;
+                        background: #e74c3c;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 16px;
+                    ">Restart System</button>
+                </div>
+            </div>
+        `;
+    }
+
+    startSystemClock() {
         const updateClock = () => {
             const now = new Date();
             const clockElement = document.getElementById('clock-time');
@@ -929,7 +1133,22 @@ Remember: Use tools ethically and legally! 🛡️`;
     }
 }
 
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
+
 // Initialize the GUI when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-    new MukuviGUI();
+    new MukuviOSGUI();
 });

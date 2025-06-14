@@ -41,20 +41,25 @@ export class MukuviKernel {
   }
 
   async loadServices() {
-    const services = [
-      'logger',
-      'network',
-      'scheduler',
-      'memory-manager'
-    ];
+    try {
+      const services = [
+        'logger',
+        'network',
+        'scheduler',
+        'memory-manager'
+      ];
 
-    for (const service of services) {
-      console.log(chalk.gray(`  Loading ${service}...`));
-      // Simulate service loading
-      await new Promise(resolve => setTimeout(resolve, 100));
+      for (const service of services) {
+        console.log(chalk.gray(`  Loading ${service}...`));
+        // Simulate service loading
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+      
+      console.log(chalk.green('✅ System services loaded'));
+    } catch (error) {
+      console.error(chalk.red(`❌ Failed to load services: ${error.message}`));
+      throw error;
     }
-    
-    console.log(chalk.green('✅ System services loaded'));
   }
 
   async startShell() {

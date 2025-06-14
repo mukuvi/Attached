@@ -1,0 +1,9 @@
+node_modules
+.git
+*.log
+.env
+.env.local
+mukuvi-system/
+src/tests/
+*.md
+!README-DEPLOYMENT.md

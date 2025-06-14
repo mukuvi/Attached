@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/gui/gui-server.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "src/gui/public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/src/gui/gui-server.js"
+    },
+    {
+      "src": "/socket.io/(.*)",
+      "dest": "/src/gui/gui-server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/src/gui/public/$1"
+    }
+  ],
+  "functions": {
+    "src/gui/gui-server.js": {
+      "maxDuration": 30
+    }
+  }
+}

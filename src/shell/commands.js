@@ -1,13 +1,15 @@
 import chalk from 'chalk';
 import figlet from 'figlet';
 import { SecurityCommands } from '../security/security-commands.js';
+import { AdvancedCommands } from '../security/advanced-commands.js';
 
 export class Commands {
   constructor(osApi) {
     this.osApi = osApi;
     this.securityCommands = new SecurityCommands(osApi);
+    this.advancedCommands = new AdvancedCommands(osApi);
     
-    // Merge security commands with base commands
+    // Merge all command sets
     this.commandMap = {
       'help': this.help.bind(this),
       'ls': this.ls.bind(this),
@@ -32,7 +34,9 @@ export class Commands {
       'date': this.date.bind(this),
       'calc': this.calc.bind(this),
       // Add security commands
-      ...this.securityCommands.getCommands()
+      ...this.securityCommands.getCommands(),
+      // Add advanced commands (hacking, programming, system admin)
+      ...this.advancedCommands.getCommands()
     };
   }
 
@@ -46,7 +50,7 @@ export class Commands {
 
   async help(args) {
     const commands = Object.keys(this.commandMap).sort();
-    let output = chalk.cyan('🖥️  Mukuvi OS - Advanced Security Operating System\n\n');
+    let output = chalk.cyan('🖥️  Mukuvi OS - Complete Linux-Style Hacking & Programming Environment\n\n');
     
     const descriptions = {
       // Basic commands
@@ -73,32 +77,138 @@ export class Commands {
       'date': 'Show current date and time',
       'calc': 'Simple calculator',
       
-      // Security commands
+      // Package Management
+      'apt': 'Advanced Package Tool',
+      'apt-get': 'APT package manager',
+      'dpkg': 'Debian package manager',
+      'snap': 'Snap package manager',
+      
+      // Service Management
+      'systemctl': 'Control systemd services',
+      'service': 'Control system services',
+      
+      // Development Tools
+      'create-project': 'Create new development project',
+      'dev-server': 'Start development server',
+      'build': 'Build project',
+      'test': 'Run project tests',
+      'deploy': 'Deploy project',
+      
+      // Programming Languages
+      'python': 'Python interpreter',
+      'python3': 'Python 3 interpreter',
+      'node': 'Node.js runtime',
+      'npm': 'Node Package Manager',
+      'pip': 'Python Package Installer',
+      'gcc': 'GNU Compiler Collection',
+      'make': 'Build automation tool',
+      'git': 'Version control system',
+      'docker': 'Container platform',
+      'vim': 'Vi IMproved text editor',
+      'nano': 'Simple text editor',
+      'code': 'Visual Studio Code',
+      
+      // WiFi Security
       'wifi-scan': 'Scan for WiFi networks',
       'wifi-capture': 'Capture WPA handshakes',
       'wifi-crack': 'Crack WiFi passwords',
       'wifi-deauth': 'Deauthentication attacks',
       'wifi-list': 'List WiFi scan results',
+      'aircrack-ng': 'WiFi security auditing suite',
+      
+      // Network Security
       'nmap-scan': 'Network port scanning',
       'vuln-scan': 'Vulnerability assessment',
       'network-discovery': 'Discover network hosts',
+      'netstat': 'Display network connections',
+      'ss': 'Socket statistics',
+      'ping': 'Test network connectivity',
+      'traceroute': 'Trace network path',
+      'dig': 'DNS lookup utility',
+      'nslookup': 'DNS lookup tool',
+      
+      // Web Application Security
+      'sqlmap': 'Automatic SQL injection tool',
+      'burpsuite': 'Web application security testing',
+      'nikto': 'Web server scanner',
+      'dirb': 'Web content scanner',
+      'gobuster': 'Directory/file brute forcer',
+      
+      // Penetration Testing
+      'metasploit': 'Penetration testing framework',
+      'msfconsole': 'Metasploit console',
+      'hydra': 'Network login cracker',
+      'social-engineer': 'Social engineering toolkit',
+      
+      // Password Cracking
+      'john': 'John the Ripper password cracker',
+      'hashcat': 'Advanced password recovery',
+      'hash-crack': 'Password hash cracking',
+      
+      // Network Analysis
+      'wireshark': 'Network protocol analyzer',
+      'tcpdump': 'Network packet analyzer',
+      
+      // AI Assistant
       'ai': 'Ask the AI security assistant',
       'ai-history': 'View AI conversation history',
+      
+      // Security Tools
       'exploit-db': 'Search exploit database',
-      'hash-crack': 'Password hash cracking',
       'forensics': 'Digital forensics tools',
-      'security-audit': 'System security audit'
+      'security-audit': 'System security audit',
+      
+      // System Administration
+      'top': 'Display running processes',
+      'htop': 'Interactive process viewer',
+      'free': 'Display memory usage',
+      'df': 'Display filesystem usage',
+      'du': 'Display directory usage',
+      'lsof': 'List open files',
+      'crontab': 'Schedule tasks',
+      'sudo': 'Execute as another user',
+      'su': 'Switch user',
+      'chmod': 'Change file permissions',
+      'chown': 'Change file ownership',
+      
+      // File Operations
+      'find': 'Search for files',
+      'grep': 'Search text patterns',
+      'awk': 'Text processing tool',
+      'sed': 'Stream editor',
+      'tar': 'Archive files',
+      'zip': 'Create zip archives',
+      'unzip': 'Extract zip archives',
+      'wget': 'Download files',
+      'curl': 'Transfer data',
+      
+      // Firewall
+      'iptables': 'Configure firewall rules',
+      'ufw': 'Uncomplicated Firewall'
     };
 
     // Group commands by category
     const categories = {
-      '📁 File Operations': ['ls', 'cd', 'pwd', 'mkdir', 'touch', 'cat', 'rm'],
-      '💻 System Info': ['ps', 'whoami', 'uname', 'uptime', 'sysinfo', 'users'],
-      '🛠️  Utilities': ['echo', 'date', 'calc', 'clear', 'help', 'history', 'banner'],
-      '🔒 WiFi Security': ['wifi-scan', 'wifi-capture', 'wifi-crack', 'wifi-deauth', 'wifi-list'],
-      '🌐 Network Security': ['nmap-scan', 'vuln-scan', 'network-discovery'],
+      '📁 File Operations': ['ls', 'cd', 'pwd', 'mkdir', 'touch', 'cat', 'rm', 'find', 'grep', 'chmod', 'chown'],
+      '💻 System Info & Monitoring': ['ps', 'top', 'htop', 'free', 'df', 'du', 'whoami', 'uname', 'uptime', 'sysinfo', 'users', 'lsof'],
+      '📦 Package Management': ['apt', 'apt-get', 'dpkg', 'snap'],
+      '⚙️ Service Management': ['systemctl', 'service'],
+      '🛠️ Development Tools': ['create-project', 'dev-server', 'build', 'test', 'deploy'],
+      '💻 Programming Languages': ['python', 'python3', 'node', 'npm', 'pip', 'gcc', 'make', 'git', 'docker'],
+      '📝 Text Editors': ['vim', 'nano', 'code'],
+      '🔒 WiFi Security': ['wifi-scan', 'wifi-capture', 'wifi-crack', 'wifi-deauth', 'wifi-list', 'aircrack-ng'],
+      '🌐 Network Security': ['nmap-scan', 'vuln-scan', 'network-discovery', 'netstat', 'ss', 'ping', 'traceroute', 'dig', 'nslookup'],
+      '🕷️ Web Application Security': ['sqlmap', 'burpsuite', 'nikto', 'dirb', 'gobuster'],
+      '🚀 Penetration Testing': ['metasploit', 'msfconsole', 'hydra', 'social-engineer'],
+      '🔐 Password Cracking': ['john', 'hashcat', 'hash-crack'],
+      '📡 Network Analysis': ['wireshark', 'tcpdump'],
       '🤖 AI Assistant': ['ai', 'ai-history'],
-      '🔍 Security Tools': ['exploit-db', 'hash-crack', 'forensics', 'security-audit'],
+      '🔍 Security Tools': ['exploit-db', 'forensics', 'security-audit'],
+      '🔥 Firewall': ['iptables', 'ufw'],
+      '📄 Text Processing': ['awk', 'sed', 'tar', 'zip', 'unzip'],
+      '🌍 Network Utilities': ['wget', 'curl'],
+      '👑 System Administration': ['sudo', 'su', 'crontab'],
+      '🛠️ Utilities': ['echo', 'date', 'calc', 'clear', 'help', 'history', 'banner'],
       '⚡ System Control': ['exit', 'shutdown']
     };
 
@@ -114,6 +224,9 @@ export class Commands {
 
     output += chalk.cyan('💡 Tips:\n');
     output += chalk.white('  • Use "ai <question>" to get help with security topics\n');
+    output += chalk.white('  • Use "apt install <package>" to install new tools\n');
+    output += chalk.white('  • Use "systemctl status" to see running services\n');
+    output += chalk.white('  • Use "create-project <name> <type>" to start development\n');
     output += chalk.white('  • Always use security tools ethically and legally\n');
     output += chalk.white('  • Type "help <command>" for detailed command info\n');
 
@@ -227,7 +340,7 @@ export class Commands {
 
   async uname() {
     const sysInfo = this.osApi.getSystemInfo();
-    return { output: `${sysInfo.osName} ${sysInfo.version} - Security Edition`, exit: false };
+    return { output: `${sysInfo.osName} ${sysInfo.version} - Complete Hacking & Programming Edition`, exit: false };
   }
 
   async uptime() {
@@ -250,7 +363,7 @@ export class Commands {
   }
 
   async exit() {
-    return { output: chalk.yellow('👋 Goodbye! Stay secure!'), exit: true };
+    return { output: chalk.yellow('👋 Goodbye! Stay secure and keep coding!'), exit: true };
   }
 
   async shutdown() {
@@ -274,10 +387,10 @@ export class Commands {
   async sysinfo() {
     const sysInfo = this.osApi.getSystemInfo();
     let output = chalk.cyan('🖥️  Mukuvi OS System Information\n');
-    output += chalk.cyan('═'.repeat(40) + '\n\n');
+    output += chalk.cyan('═'.repeat(50) + '\n\n');
     output += `${chalk.yellow('OS Name:')} ${sysInfo.osName}\n`;
     output += `${chalk.yellow('Version:')} ${sysInfo.version}\n`;
-    output += `${chalk.yellow('Edition:')} Security & Penetration Testing\n`;
+    output += `${chalk.yellow('Edition:')} Complete Hacking & Programming Environment\n`;
     output += `${chalk.yellow('Boot Time:')} ${sysInfo.bootTime.toLocaleString()}\n`;
     output += `${chalk.yellow('Uptime:')} ${Math.floor(sysInfo.uptime / 1000)} seconds\n`;
     output += `${chalk.yellow('Processes:')} ${sysInfo.processCount}\n`;
@@ -285,12 +398,34 @@ export class Commands {
     output += `${chalk.yellow('Node.js Version:')} ${process.version}\n`;
     output += `${chalk.yellow('Platform:')} ${process.platform}\n`;
     output += `${chalk.yellow('Architecture:')} ${process.arch}\n\n`;
-    output += chalk.green('🔒 Security Features Enabled:\n');
-    output += chalk.white('  • WiFi Security Testing\n');
-    output += chalk.white('  • Network Vulnerability Scanning\n');
-    output += chalk.white('  • AI Security Assistant\n');
-    output += chalk.white('  • Digital Forensics Tools\n');
-    output += chalk.white('  • Exploit Database Access\n');
+    
+    output += chalk.green('🔒 Security Features:\n');
+    output += chalk.white('  • WiFi Security Testing (aircrack-ng, wifi-crack)\n');
+    output += chalk.white('  • Network Vulnerability Scanning (nmap, vuln-scan)\n');
+    output += chalk.white('  • Web Application Testing (sqlmap, burpsuite)\n');
+    output += chalk.white('  • Penetration Testing Framework (metasploit)\n');
+    output += chalk.white('  • Password Cracking (john, hashcat)\n');
+    output += chalk.white('  • Network Analysis (wireshark, tcpdump)\n');
+    output += chalk.white('  • Social Engineering Toolkit\n');
+    output += chalk.white('  • AI Security Assistant (ARIA)\n');
+    output += chalk.white('  • Digital Forensics Tools\n\n');
+    
+    output += chalk.blue('💻 Development Features:\n');
+    output += chalk.white('  • Multi-language Support (Python, Node.js, C/C++)\n');
+    output += chalk.white('  • Package Management (apt, npm, pip)\n');
+    output += chalk.white('  • Development Tools (git, docker, vim, code)\n');
+    output += chalk.white('  • Project Creation & Management\n');
+    output += chalk.white('  • Service Management (systemctl)\n');
+    output += chalk.white('  • Build & Deployment Tools\n');
+    output += chalk.white('  • Database Support (MySQL, PostgreSQL)\n\n');
+    
+    output += chalk.magenta('🛠️ System Administration:\n');
+    output += chalk.white('  • Process Management (ps, top, htop)\n');
+    output += chalk.white('  • File System Operations (find, grep, tar)\n');
+    output += chalk.white('  • Network Configuration (iptables, ufw)\n');
+    output += chalk.white('  • User & Permission Management\n');
+    output += chalk.white('  • System Monitoring & Logging\n');
+    output += chalk.white('  • Cron Job Scheduling\n');
     
     return { output, exit: false };
   }
@@ -298,10 +433,10 @@ export class Commands {
   async banner() {
     const banner = figlet.textSync('MUKUVI OS', { horizontalLayout: 'full' });
     const output = chalk.cyan(banner) + '\n' + 
-                  chalk.yellow('🔒 Advanced Security Operating System') + '\n' +
-                  chalk.green('🛡️  Penetration Testing & Digital Forensics Platform') + '\n' +
-                  chalk.gray('Built for ethical hackers and security professionals') + '\n\n' +
-                  chalk.white('Features: WiFi Security • Network Scanning • AI Assistant • Forensics');
+                  chalk.yellow('🔒 Complete Linux-Style Hacking & Programming Environment') + '\n' +
+                  chalk.green('🛡️  Penetration Testing • Development • System Administration') + '\n' +
+                  chalk.gray('Built for ethical hackers, developers, and system administrators') + '\n\n' +
+                  chalk.white('Features: WiFi Security • Web App Testing • Network Scanning • Programming • AI Assistant');
     
     return { output, exit: false };
   }

@@ -40,7 +40,7 @@ class MukuviGUI {
         const loadingText = document.querySelector('.loading-text');
         
         const bootMessages = [
-            'Initializing Mukuvi Security Kernel...',
+            'Initializing mukuviOS Security Kernel...',
             'Loading WiFi hacking modules...',
             'Starting AI assistant ARIA...',
             'Initializing network scanners...',
@@ -83,7 +83,7 @@ class MukuviGUI {
     }
 
     showWelcomeMessage() {
-        const welcomeMsg = `🔒 Welcome to Mukuvi OS - Complete Hacking & Programming Environment!
+        const welcomeMsg = `🔒 Welcome to mukuviOS - Complete Hacking & Programming Environment!
 
 🛡️ Security Tools Available:
 • WiFi Security Testing (aircrack-ng, wifi-crack, handshake capture)
@@ -549,7 +549,7 @@ Remember: Use tools ethically and legally! 🛡️`;
 
     getPromptText() {
         const userColor = this.currentUser?.isAdmin ? '🔴' : '🟢';
-        return `${userColor}${this.currentUser?.username || 'user'}@mukuvi-security:${this.currentDirectory}$ `;
+        return `${userColor}${this.currentUser?.username || 'user'}@mukuvios:${this.currentDirectory}$ `;
     }
 
     updatePrompt() {

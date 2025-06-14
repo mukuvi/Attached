@@ -1,9 +1,9 @@
-# Mukuvi OS - Vercel Deployment Guide
+# mukuviOS - Vercel Deployment Guide
 
 ## 🚀 Deploy to Vercel
 
 ### Option 1: One-Click Deploy
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/mukuvi-os)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/mukuvios)
 
 ### Option 2: Manual Deployment
 

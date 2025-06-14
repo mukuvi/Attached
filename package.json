@@ -1,7 +1,7 @@
 {
-  "name": "mukuvi-os",
+  "name": "mukuvios",
   "version": "1.0.0",
-  "description": "Mukuvi Operating System - A complete terminal-based OS with advanced security features",
+  "description": "mukuviOS - A complete terminal-based OS with advanced security features",
   "main": "src/kernel/boot.js",
   "type": "module",
   "scripts": {
@@ -14,8 +14,8 @@
     "build": "echo 'Build complete - static files ready'",
     "vercel-build": "npm run setup && echo 'Vercel build complete'"
   },
-  "keywords": ["operating-system", "terminal", "mukuvi", "os", "security", "hacking", "ai"],
-  "author": "Mukuvi OS Team",
+  "keywords": ["operating-system", "terminal", "mukuvios", "os", "security", "hacking", "ai"],
+  "author": "mukuviOS Team",
   "license": "GPL-3.0",
   "dependencies": {
     "chalk": "^5.3.0",
